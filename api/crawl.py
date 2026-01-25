@@ -18,8 +18,12 @@ def clean_html(text):
     """Remove all HTML tags and decode entities."""
     if not text:
         return ''
-    # Decode HTML entities first (&lt; -> <, &amp; -> &, etc.)
+    # Remove &nbsp; before unescaping (converts to \xa0 otherwise)
+    text = text.replace('&nbsp;', ' ')
+    # Decode HTML entities (&lt; -> <, &amp; -> &, etc.)
     text = html.unescape(text)
+    # Replace non-breaking space unicode with regular space
+    text = text.replace('\xa0', ' ')
     # Remove CDATA wrappers
     text = re.sub(r'<!\[CDATA\[(.*?)\]\]>', r'\1', text, flags=re.DOTALL)
     # Remove all HTML tags
