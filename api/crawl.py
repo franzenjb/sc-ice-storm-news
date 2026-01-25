@@ -6,13 +6,27 @@ Endpoint: /api/crawl
 import json
 import hashlib
 import re
+import html
 from datetime import datetime
 from urllib.parse import quote_plus
 from http.server import BaseHTTPRequestHandler
 
-# We'll use urllib since requests may not be available in Vercel's Python runtime
 import urllib.request
 import urllib.error
+
+def clean_html(text):
+    """Remove all HTML tags and decode entities."""
+    if not text:
+        return ''
+    # Decode HTML entities first (&lt; -> <, &amp; -> &, etc.)
+    text = html.unescape(text)
+    # Remove CDATA wrappers
+    text = re.sub(r'<!\[CDATA\[(.*?)\]\]>', r'\1', text, flags=re.DOTALL)
+    # Remove all HTML tags
+    text = re.sub(r'<[^>]+>', ' ', text)
+    # Clean up whitespace
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
 
 SEARCH_TERMS = [
     "South Carolina ice storm",
@@ -53,10 +67,7 @@ def parse_rss_simple(xml_content):
                     re.search(r'<published>(.*?)</published>', item_xml, re.DOTALL)
         desc_match = re.search(r'<description>(.*?)</description>', item_xml, re.DOTALL)
 
-        title = title_match.group(1).strip() if title_match else ''
-        # Clean CDATA
-        title = re.sub(r'<!\[CDATA\[(.*?)\]\]>', r'\1', title)
-        title = re.sub(r'<[^>]+>', '', title)
+        title = clean_html(title_match.group(1)) if title_match else ''
 
         link = ''
         if link_match:
@@ -67,9 +78,7 @@ def parse_rss_simple(xml_content):
 
         description = ''
         if desc_match:
-            description = desc_match.group(1).strip()
-            description = re.sub(r'<!\[CDATA\[(.*?)\]\]>', r'\1', description)
-            description = re.sub(r'<[^>]+>', '', description)[:300]
+            description = clean_html(desc_match.group(1))[:200]
 
         if title and link:
             items.append({
