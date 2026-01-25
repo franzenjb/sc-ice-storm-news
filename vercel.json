@@ -1,19 +1,11 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "index.html", "use": "@vercel/static" },
-    { "src": "news_data.json", "use": "@vercel/static" }
-  ],
-  "routes": [
-    { "src": "/data", "dest": "/news_data.json" },
-    { "src": "/(.*)", "dest": "/index.html" }
-  ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
         { "key": "X-Frame-Options", "value": "ALLOWALL" },
-        { "key": "Content-Security-Policy", "value": "frame-ancestors *" }
+        { "key": "Content-Security-Policy", "value": "frame-ancestors *" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
       ]
     }
   ]
