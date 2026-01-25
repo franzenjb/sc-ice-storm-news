@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SC Ice Storm News | American Red Cross</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: #d32f2f;
+            color: white;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .header .updated {
+            font-size: 12px;
+            margin-top: 12px;
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 16px 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #c62828;
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .articles-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: #c62828;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ffcdd2;
+        }
+
+        .article-card {
+            padding: 16px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .article-card:last-child {
+            border-bottom: none;
+        }
+
+        .article-source {
+            font-size: 11px;
+            color: #c62828;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .article-title {
+            font-size: 16px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .article-title a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .article-title a:hover {
+            color: #c62828;
+            text-decoration: underline;
+        }
+
+        .summary {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .article-meta {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        .sidebar-card h3 {
+            font-size: 14px;
+            color: #c62828;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .source-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+        }
+
+        .source-item:last-child {
+            border-bottom: none;
+        }
+
+        .source-count {
+            font-weight: bold;
+            color: #c62828;
+        }
+
+        .search-terms {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .term-tag {
+            background: #ffebee;
+            color: #c62828;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: #999;
+            font-size: 12px;
+        }
+
+        .refresh-btn {
+            display: inline-block;
+            background: #c62828;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 13px;
+            margin-top: 16px;
+        }
+
+        .refresh-btn:hover {
+            background: #b71c1c;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>South Carolina Ice Storm</h1>
+        <div class="subtitle">News Monitoring | American Red Cross</div>
+        <div class="updated">Last updated: January 25, 2026 at 11:53 AM</div>
+    </div>
+
+    <div class="container">
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="number">33</div>
+                <div class="label">Total Articles</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">4</div>
+                <div class="label">News Sources</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">0</div>
+                <div class="label">Red Cross Mentions</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="articles-section">
+                <h2 class="section-title">Latest Coverage</h2>
+                
+            <div class="article-card">
+                <div class="article-source">WYFF Greenville</div>
+                <h3 class="article-title">
+                    <a href="https://www.wyff4.com/article/south-carolina-power-outages-tracking-map-live/70110391" target="_blank">Live Map: Track power outages across SC and NC as ice, sleet to blanket region</a>
+                </h3>
+                <p class="summary">Bookmark this link for live updates as the outages are reported.</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 16:52:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WLTX Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wltx.com/article/weather/weather-impact/latest-updates-south-carolina-midlands-winter-storm/101-31239e18-4313-4822-b6b0-93c9c53f27be" target="_blank">LIVE UPDATES: Ice storm impacts grow across the South Carolina Midlands</a>
+                </h3>
+                <p class="summary">Ice and freezing rain are already impacting roads and services across the Midlands. Track closures, outages and safety updates here.</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 16:50:05</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMiqwFBVV95cUxPb3d6dEZJdTljcmNlVWdKVWZJSHdpTnMtSTk5MVVRSzRCUUdhWmJmdENFMjZCUHBVTTFxNGh2N0dfUnpjbmJTVGdZMWQ3VzRsNWE0UEhLWkxrcG9iRTVnbVpoZHRlSVpDcFotVVNNd0hnVFJWclMzUTY4ajE1VzhWY3R6WDNxY21BY1pVeDFwdlJKYTFnZWlYOTFmcEFkZVZyRWNsb3k0d1BWbXc?oc=5" target="_blank">South Carolina opens 24/7 winter weather hotline as freezing rain hits state - abcnews4.com</a>
+                </h3>
+                <p class="summary">South Carolina opens 24/7 winter weather hotline as freezing rain hits state  abcnews4.com</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 16:47:10</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WYFF Greenville</div>
+                <h3 class="article-title">
+                    <a href="https://www.wyff4.com/article/live-updates-ice-storm-south-carolina/70125971" target="_blank">Live updates as ice storm hits the Carolinas</a>
+                </h3>
+                <p class="summary">An ice storm is hitting parts of South Carolina, North Carolina and Georgia and WYFF News 4 will be here throughout the storm to keep you updated.</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 16:46:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxPdm1BVmhzNE5MRk5BS01oN0Q0TDEtTjY5QWRPenBINXowR0ZpWlpXb09JNXRhMWZZYTlvNEduWlg0cmNnSGFSSUp1QkFHc3Btbmw1a3VLaEcyUUtYQl91MndLQm1maXlhWTUtaldXX09PN0NMUGZtTjZRYkNtOHhGXzlkMzU?oc=5" target="_blank">Pillar of light spotted during the winter storm in North Carolina - wxii12.com</a>
+                </h3>
+                <p class="summary">Pillar of light spotted during the winter storm in North Carolina  wxii12.com</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 16:20:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WYFF Greenville</div>
+                <h3 class="article-title">
+                    <a href="https://www.wyff4.com/article/south-carolina-winter-weather-hotline-help/70129343" target="_blank">South Carolina winter weather hotline is active</a>
+                </h3>
+                <p class="summary">South Carolina residents with questions about the winter weather response can call the state’s toll-free hotline.</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 16:05:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WYFF Greenville</div>
+                <h3 class="article-title">
+                    <a href="https://www.wyff4.com/article/warming-shelters-upstate-south-carolina/70059608" target="_blank">LIST: Warming shelters open in Upstate</a>
+                </h3>
+                <p class="summary">Here is a list of warming shelters that are open in the Upstate area of South Carolina:</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 16:03:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WYFF Greenville</div>
+                <h3 class="article-title">
+                    <a href="https://www.wyff4.com/article/south-carolina-schools-universities-elearning-remote/70099314" target="_blank">School districts, universities announce changes for Monday because of winter storm</a>
+                </h3>
+                <p class="summary">School districts and universities in South Carolina are making plans for Monday due to the weekend winter storm and lingering impacts. </p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 15:06:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WYFF Greenville</div>
+                <h3 class="article-title">
+                    <a href="https://www.wyff4.com/article/north-carolina-schools-universities-elearning-remote/70113143" target="_blank">NC: School districts, universities announce changes ahead of winter storm</a>
+                </h3>
+                <p class="summary">School districts and universities in North Carolina are making plans for Monday due to the weekend winter storm and lingering impacts. </p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 15:04:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMilAFBVV95cUxQa2RYSUlCOVhKd1BNZW5ocmo2YktZemFHeF9yNjFMN1NyZU9wTXB5NDRkcUZhLTJNalJUbXNhQ3RqdXdCcklBQ2hpTVBqZ0k4TFZ4Ui10RDYtRUlQVFF4eGlmaTNIT1Y1NVc1TEtKbmpIY1g4NkFnTnRnbkZ2U0ptZ0o3TG85dlJteXVKOUc3cndfblN1?oc=5" target="_blank">Freezing rain, sleet arrives in the Upstate, Western North Carolina, and Northeast Georgia - wyff4.com</a>
+                </h3>
+                <p class="summary">Freezing rain, sleet arrives in the Upstate, Western North Carolina, and Northeast Georgia  wyff4.com</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 14:57:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WYFF Greenville</div>
+                <h3 class="article-title">
+                    <a href="https://www.wyff4.com/article/freezing-rain-sleet-arrive-south-carolina-ice-storm/70125947" target="_blank">Freezing rain, sleet arrives in the Upstate, Western North Carolina, and Northeast Georgia</a>
+                </h3>
+                <p class="summary">Areas in South Carolina, North Carolina, and Georgia are beginning to see a high-impact ice storm move in. </p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 14:57:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WLTX Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wltx.com/article/weather/weather-impact/power-outages-south-carolina/101-b1604ff5-5801-4f2c-82a5-8773baab5bd9" target="_blank">How do I report a power outage in South Carolina? Here's who to contact</a>
+                </h3>
+                <p class="summary">Ice and sleet could affect electrical service in South Carolina as we head into the weekend.</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 14:34:25</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WYFF Greenville</div>
+                <h3 class="article-title">
+                    <a href="https://www.wyff4.com/article/pillar-of-light-spotted-north-carolina/70127742" target="_blank">Pillars of light spotted during winter storm in North Carolina</a>
+                </h3>
+                <p class="summary">A rare winter phenomenon was captured on camera during the winter storm Sunday.</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 13:28:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMikAFBVV95cUxNNEt2a2YyYk45ajQ3ODdIN28wNWlwakRhdDJpU3FMT2czaHc1cFI0R1FxQmxESGtjaFhUaGJGT1BvWVQ3OVROVFppNHRiWTA5SnRBNU1jTWlwX09fYUszWFYxTm9HM1MyTnlRb2hrLThsRmV5cVBVUXZ6WE5nV2JnYi1HXzh4UDNWWXp0bE53N1U?oc=5" target="_blank">City of Greenville shares winter storm road update - foxcarolina.com</a>
+                </h3>
+                <p class="summary">City of Greenville shares winter storm road update  foxcarolina.com</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 13:13:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMiqwFBVV95cUxPeWo5ZEhYenRQbWo2V3hwSVdqR1k4dGNhZGg1MGdibnJoMHl3NmtrU2FGcnM5Y0hRMHlwZDI2cmRVdzJEV05fS0dQMnNBcVRUbml6SjJ3Y2FVUGZRaVdIdkRsQlp2ajA2bFhIZjVFU3M0NDloZnhMTHJacmxOaFdZR1VlY3VhMmlUcFdCVTI0emF4Q2hVQ3Y3ckFXNmZhVG9kU1JYX0lGdzFVY1U?oc=5" target="_blank">Tracking Duke Energy power outages amid winter storm in Carolinas on Jan. 25, 2026 - wbtv.com</a>
+                </h3>
+                <p class="summary">Tracking Duke Energy power outages amid winter storm in Carolinas on Jan. 25, 2026  wbtv.com</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 11:43:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMi2wFBVV95cUxQR1M4dVI2VC1Od2tPQ0ZiR0pIYWs2U1pvdDF2ZEtnZ0xCa1pISS04WHdCQW11U2czQ3A3WFU0SU1OVDZubVlXZ0NyVTNPT0x5Uk1nWDg5ZFNySm90UE9tYnBBQzIzbFlncm5PbmptM3dEQ0oxM1pfcVJDbkhTWU8zYXNvbS1vN082VUJXeHlqNHNzQnF2THZHbDhpSHp2V3NYVkpQcEpWclhNWkR2aGI1emhjWFl4VEtHd3h2VXZNcUxRd3ltT0RsVTlvQ1o2R3hTVlF5OS1MamRQbE0?oc=5" target="_blank">Where is power out? Upstate South Carolina power outage map - greenvilleonline.com</a>
+                </h3>
+                <p class="summary">Where is power out? Upstate South Carolina power outage map  greenvilleonline.com</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 09:02:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WYFF Greenville</div>
+                <h3 class="article-title">
+                    <a href="https://www.wyff4.com/article/winter-storm-ice-snow-south-carolina-road-closing-forecast/70059157" target="_blank">Winter weather guide: Forecast, closings, road conditions, live cameras, power outages</a>
+                </h3>
+                <p class="summary">Here is your one-stop shop for all the winter weather information you need to know in South Carolina.</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 08:49:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMifEFVX3lxTE5tcHVtX1pjZE5kOHJhQ1owOTlVOVJUREN0RGhIUEdjYTF5TTJZTHlyX3labWNNRW9iVWZWSVFlN2lWS1EwZ21lZXBmM0pYcTNzbmtUTWhlRTRwbG9LRm5aY2MyTTBfYU1QSDZJZkVYOUJDUWh0QjFRMVVlX3o?oc=5" target="_blank">New timeline for ice storm expected in Upstate, Western North Carolina, Northeast Georgia - wyff4.com</a>
+                </h3>
+                <p class="summary">New timeline for ice storm expected in Upstate, Western North Carolina, Northeast Georgia  wyff4.comWinter weather guide: Forecast, closings, road conditions, live cameras, power outages  wyff4.comSouth Carolina winter weather hotline is active  wyff4.comIce storm warning still in effect for Columbi</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 08:18:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WYFF Greenville</div>
+                <h3 class="article-title">
+                    <a href="https://www.wyff4.com/article/ice-storm-south-carolina-timeline/70120646" target="_blank">New timeline for ice storm expected in Upstate, Western North Carolina, Northeast Georgia</a>
+                </h3>
+                <p class="summary">Areas in South Carolina and North Carolina are expecting a high-impact ice storm to move in Saturday night and continue into Sunday.  </p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 08:18:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WLTX Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wltx.com/article/weather/severe-weather/warming-stations-opening-across-the-midlands-in-advance-of-weekend-winter-storm/101-1f1b7ab1-88f8-43cd-9f1c-6b16749c17b3" target="_blank">Warming stations open across the Midlands during winter storm</a>
+                </h3>
+                <p class="summary">Where you can go to find warmth during the winter storm in South Carolina</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 03:01:18</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WLTX Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wltx.com/article/weather/weather-impact/how-to-get-wltx-plus-on-tv/101-cc2944b0-f63d-4432-b6d2-3e7a67f279e6" target="_blank">How to watch WLTX for live streaming South Carolina winter storm coverage</a>
+                </h3>
+                <p class="summary">Download on your TV. Watch for free.</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 02:18:41</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WLTX Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wltx.com/article/weather/weather-impact/south-carolina-winter-storm-update-governor-henry-mcmaster/101-b17d4382-a6fa-4508-83e1-3b2bced9d777" target="_blank">South Carolina state officials warn of dayslong power outages, dangerous travel</a>
+                </h3>
+                <p class="summary">South Carolina officials warn of dayslong power outages, dangerous travel</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 00:19:22</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WLTX Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wltx.com/article/news/local/south-carolina-school-closures-schedule-changes-winter-storm/101-6b43efba-2e2c-4c20-b635-0a01a3a90816" target="_blank">South Carolina school closures and schedule changes</a>
+                </h3>
+                <p class="summary">With a winter storm expected to impact the Midlands over the weekend, some schools are altering their schedules. Here's a list.</p>
+                <div class="article-meta">
+                    <span class="date">Sat, 24 Jan 2026 20:44:10</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WIS Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wistv.com/2026/01/24/watch-mcmaster-hold-press-conference-ahead-expected-winter-storm/" target="_blank">WATCH: Gov. McMaster holds press conference ahead of expected winter storm</a>
+                </h3>
+                <p class="summary">South Carolina Gov. Henry McMaster is holding a press conference about state preparation ahead of this weekend’s expected.</p>
+                <div class="article-meta">
+                    <span class="date">Sat, 24 Jan 2026 20:25:49</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMi7AFBVV95cUxPUm1maXA0UG1IalI4dmF4a1prczJIRlZ6NFRpSVdLVWx4Q0lTOUhHWUdaOHV0WUxSTEhJWnFZbjNqYXU2ZGtXRk5CakczMkJuUnU3UlhQTXJMWjhUYVN4MmNTWVJkUHB5T3Y4YnhISmRZeHpTUnBWNGNOUlpQa3Jtc1Bud2ZmdTlZaHpmdzljaE5qQXZBLUktRUpuVlJ2bVYzVks5Z3FDaVhldHdnNm1jWlpJVXpQOFZVbnZrZmFwWVJWbnItQUZ0MkFGNll4SzVnSEJxSHVfMHhTcDlob2VYeDB4WDFNcTdlS0pXLQ?oc=5" target="_blank">Stream live on WFMY+ | Winter storm coverage in North Carolina - wfmynews2.com</a>
+                </h3>
+                <p class="summary">Stream live on WFMY+ | Winter storm coverage in North Carolina  wfmynews2.com</p>
+                <div class="article-meta">
+                    <span class="date">Sat, 24 Jan 2026 20:16:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WLTX Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wltx.com/article/news/local/president-trump-approves-emergency-declaration-for-south-carolina-ahead-of-winter-storm-fema/101-02fa44be-dd59-4709-8da2-a0f5026ba993" target="_blank">Trump approves Emergency Declaration for South Carolina ahead of winter storm</a>
+                </h3>
+                <p class="summary">FEMA disaster relief efforts, federal aid will be available to state</p>
+                <div class="article-meta">
+                    <span class="date">Sat, 24 Jan 2026 19:34:07</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WIS Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wistv.com/2026/01/24/south-carolina-moves-opcon-1-ahead-winter-storm/" target="_blank">South Carolina moves to OPCON 1 ahead of winter storm</a>
+                </h3>
+                <p class="summary">South Carolina Emergency Management said that the State Emergency Operations Center is operating at OPCON 1 as of Saturday due to winter weather impacts.</p>
+                <div class="article-meta">
+                    <span class="date">Sat, 24 Jan 2026 17:34:45</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WLTX Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wltx.com/article/news/local/emergency-prescription-refill-south-carolina/101-bfc6fcdd-fa3e-492f-9cbc-f79ee510b3b3" target="_blank">South Carolina allows one-time early prescription refills ahead of winter storm</a>
+                </h3>
+                <p class="summary">South Carolina Department of Public Health says residents can get a one-time early refill of certain prescriptions due through Jan. 30 as the storm approaches.</p>
+                <div class="article-meta">
+                    <span class="date">Sat, 24 Jan 2026 16:01:16</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WIS Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wistv.com/2026/01/24/dph-authorizes-one-time-early-refills-prescriptions-because-winter-storm/" target="_blank">DPH authorizes one-time early refills of prescriptions because of winter storm</a>
+                </h3>
+                <p class="summary">The South Carolina Department of Public Health (DPH) said it has authorized a one-time early refill of Schedule III-V prescriptions for valid refills due through Jan. 30, 2026.</p>
+                <div class="article-meta">
+                    <span class="date">Sat, 24 Jan 2026 13:16:03</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMisgFBVV95cUxPZ3N2U0hpWWZaRUhHa195TDg4LTlTdUY5Rk14a3VIbjRCcFZ2aFdkTFlZT2tpTkd5YTNMZWR6QXFkQVc3d250UWIyYTVIMGVYSEhDNWRiYUl6R2ZRVWdrQ3NrdzBndDdrWjZmNWdYQ1lFWHFfekJiQWV3WmpnZ1EySFpUc05aTjFMdzh6dTlvN05rcVVaZlNxTzYzcC14UnhyamxWWjRSWHMxTHRaaU13bTd3?oc=5" target="_blank">Weather blog: Winter storm updates for South Carolina - southcarolinapublicradio.org</a>
+                </h3>
+                <p class="summary">Weather blog: Winter storm updates for South Carolina  southcarolinapublicradio.org</p>
+                <div class="article-meta">
+                    <span class="date">Sat, 24 Jan 2026 13:16:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WIS Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wistv.com/2026/01/24/fema-federal-disaster-relief-approved-south-carolina/" target="_blank">FEMA: Federal disaster relief approved for South Carolina</a>
+                </h3>
+                <p class="summary">On Saturday, FEMA announced that federal disaster assistance is available for the state to supplement response efforts due to emergency conditions from the severe winter storm starting Jan. 21, and continuing.</p>
+                <div class="article-meta">
+                    <span class="date">Sat, 24 Jan 2026 10:29:21</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WIS Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wistv.com/2026/01/23/south-carolina-national-guard-gives-deployment-update-ahead-winter-storm/" target="_blank">South Carolina National Guard gives deployment update ahead of winter storm</a>
+                </h3>
+                <p class="summary">The South Carolina National Guard announced it is preparing to deploy throughout the state.</p>
+                <div class="article-meta">
+                    <span class="date">Sat, 24 Jan 2026 09:58:26</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WLTX Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wltx.com/article/news/local/south-carolina-national-guard-scng-winter-storm/101-be7f76b5-e55f-4a7c-afa7-c32ea53db728" target="_blank">South Carolina National Guard mobilizes as winter storm approaches</a>
+                </h3>
+                <p class="summary">The South Carolina National Guard is preparing to assist communities as a winter storm approaches, with troops ready to clear roads and help stranded drivers.</p>
+                <div class="article-meta">
+                    <span class="date">Sat, 24 Jan 2026 04:33:08</span>
+                </div>
+            </div>
+            
+            </div>
+
+            <div class="sidebar">
+                <div class="sidebar-card">
+                    <h3>Sources</h3>
+                    <div class="source-item"><span class="source-name">WYFF Greenville</span><span class="source-count">10</span></div><div class="source-item"><span class="source-name">WLTX Columbia</span><span class="source-count">9</span></div><div class="source-item"><span class="source-name">Google News</span><span class="source-count">9</span></div><div class="source-item"><span class="source-name">WIS Columbia</span><span class="source-count">5</span></div>
+                </div>
+
+                <div class="sidebar-card">
+                    <h3>Search Terms</h3>
+                    <div class="search-terms">
+                        <span class="term-tag">South Carolina ice storm</span><span class="term-tag">SC ice storm</span><span class="term-tag">South Carolina winter storm</span><span class="term-tag">SC power outage ice</span><span class="term-tag">South Carolina freezing rain</span><span class="term-tag">SC winter weather emergency</span>
+                    </div>
+                </div>
+
+                <div class="sidebar-card">
+                    <h3>Quick Actions</h3>
+                    <p style="font-size: 13px; color: #666; margin-bottom: 12px;">
+                        Run <code>python news_crawler.py</code> to refresh the news feed.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        American Red Cross | News Monitoring System | Generated 2026-01-25 11:53
+    </div>
+</body>
+</html>
