@@ -1,0 +1,335 @@
+{
+  "metadata": {
+    "crawled_at": "2026-01-25T11:53:35.088846",
+    "total_articles": 33,
+    "search_terms": [
+      "South Carolina ice storm",
+      "SC ice storm",
+      "South Carolina winter storm",
+      "SC power outage ice",
+      "South Carolina freezing rain",
+      "SC winter weather emergency",
+      "South Carolina ice storm shelter",
+      "SC ice storm Red Cross"
+    ],
+    "sources": [
+      "The State (Columbia)",
+      "Post and Courier (Charleston)",
+      "Greenville News",
+      "WLTX (Columbia CBS)",
+      "WIS (Columbia NBC)",
+      "WYFF (Greenville NBC)",
+      "WCSC (Charleston CBS)",
+      "WMBF (Myrtle Beach)",
+      "Google News"
+    ]
+  },
+  "articles": [
+    {
+      "id": "ae45b1968b52",
+      "title": "Live Map: Track power outages across SC and NC as ice, sleet to blanket region",
+      "url": "https://www.wyff4.com/article/south-carolina-power-outages-tracking-map-live/70110391",
+      "source": "WYFF Greenville",
+      "published": "Sun, 25 Jan 2026 16:52:00 GMT",
+      "summary": "Bookmark this link for live updates as the outages are reported.",
+      "crawled_at": "2026-01-25T11:53:28.466038"
+    },
+    {
+      "id": "3b75e403f253",
+      "title": "LIVE UPDATES: Ice storm impacts grow across the South Carolina Midlands",
+      "url": "https://www.wltx.com/article/weather/weather-impact/latest-updates-south-carolina-midlands-winter-storm/101-31239e18-4313-4822-b6b0-93c9c53f27be",
+      "source": "WLTX Columbia",
+      "published": "Sun, 25 Jan 2026 16:50:05 GMT",
+      "summary": "Ice and freezing rain are already impacting roads and services across the Midlands. Track closures, outages and safety updates here.",
+      "crawled_at": "2026-01-25T11:53:24.504041"
+    },
+    {
+      "id": "1b45bc47aeca",
+      "title": "South Carolina opens 24/7 winter weather hotline as freezing rain hits state - abcnews4.com",
+      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPb3d6dEZJdTljcmNlVWdKVWZJSHdpTnMtSTk5MVVRSzRCUUdhWmJmdENFMjZCUHBVTTFxNGh2N0dfUnpjbmJTVGdZMWQ3VzRsNWE0UEhLWkxrcG9iRTVnbVpoZHRlSVpDcFotVVNNd0hnVFJWclMzUTY4ajE1VzhWY3R6WDNxY21BY1pVeDFwdlJKYTFnZWlYOTFmcEFkZVZyRWNsb3k0d1BWbXc?oc=5",
+      "source": "Google News",
+      "published": "Sun, 25 Jan 2026 16:47:10 GMT",
+      "summary": "South Carolina opens 24/7 winter weather hotline as freezing rain hits state  abcnews4.com",
+      "search_term": "South Carolina winter storm",
+      "crawled_at": "2026-01-25T11:53:23.212577"
+    },
+    {
+      "id": "6fb5d2b5e487",
+      "title": "Live updates as ice storm hits the Carolinas",
+      "url": "https://www.wyff4.com/article/live-updates-ice-storm-south-carolina/70125971",
+      "source": "WYFF Greenville",
+      "published": "Sun, 25 Jan 2026 16:46:00 GMT",
+      "summary": "An ice storm is hitting parts of South Carolina, North Carolina and Georgia and WYFF News 4 will be here throughout the storm to keep you updated.",
+      "crawled_at": "2026-01-25T11:53:28.466168"
+    },
+    {
+      "id": "d516199c43ea",
+      "title": "Pillar of light spotted during the winter storm in North Carolina - wxii12.com",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPdm1BVmhzNE5MRk5BS01oN0Q0TDEtTjY5QWRPenBINXowR0ZpWlpXb09JNXRhMWZZYTlvNEduWlg0cmNnSGFSSUp1QkFHc3Btbmw1a3VLaEcyUUtYQl91MndLQm1maXlhWTUtaldXX09PN0NMUGZtTjZRYkNtOHhGXzlkMzU?oc=5",
+      "source": "Google News",
+      "published": "Sun, 25 Jan 2026 16:20:00 GMT",
+      "summary": "Pillar of light spotted during the winter storm in North Carolina  wxii12.com",
+      "search_term": "South Carolina winter storm",
+      "crawled_at": "2026-01-25T11:53:23.212659"
+    },
+    {
+      "id": "be5ebe57c2e6",
+      "title": "South Carolina winter weather hotline is active",
+      "url": "https://www.wyff4.com/article/south-carolina-winter-weather-hotline-help/70129343",
+      "source": "WYFF Greenville",
+      "published": "Sun, 25 Jan 2026 16:05:00 GMT",
+      "summary": "South Carolina residents with questions about the winter weather response can call the state’s toll-free hotline.",
+      "crawled_at": "2026-01-25T11:53:28.466259"
+    },
+    {
+      "id": "aa51a3c23014",
+      "title": "LIST: Warming shelters open in Upstate",
+      "url": "https://www.wyff4.com/article/warming-shelters-upstate-south-carolina/70059608",
+      "source": "WYFF Greenville",
+      "published": "Sun, 25 Jan 2026 16:03:00 GMT",
+      "summary": "Here is a list of warming shelters that are open in the Upstate area of South Carolina:",
+      "crawled_at": "2026-01-25T11:53:28.466330"
+    },
+    {
+      "id": "365999ad8596",
+      "title": "School districts, universities announce changes for Monday because of winter storm",
+      "url": "https://www.wyff4.com/article/south-carolina-schools-universities-elearning-remote/70099314",
+      "source": "WYFF Greenville",
+      "published": "Sun, 25 Jan 2026 15:06:00 GMT",
+      "summary": "School districts and universities in South Carolina are making plans for Monday due to the weekend winter storm and lingering impacts. ",
+      "crawled_at": "2026-01-25T11:53:28.466428"
+    },
+    {
+      "id": "65e4a73d20fe",
+      "title": "NC: School districts, universities announce changes ahead of winter storm",
+      "url": "https://www.wyff4.com/article/north-carolina-schools-universities-elearning-remote/70113143",
+      "source": "WYFF Greenville",
+      "published": "Sun, 25 Jan 2026 15:04:00 GMT",
+      "summary": "School districts and universities in North Carolina are making plans for Monday due to the weekend winter storm and lingering impacts. ",
+      "crawled_at": "2026-01-25T11:53:28.466492"
+    },
+    {
+      "id": "2f2951543158",
+      "title": "Freezing rain, sleet arrives in the Upstate, Western North Carolina, and Northeast Georgia - wyff4.com",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQa2RYSUlCOVhKd1BNZW5ocmo2YktZemFHeF9yNjFMN1NyZU9wTXB5NDRkcUZhLTJNalJUbXNhQ3RqdXdCcklBQ2hpTVBqZ0k4TFZ4Ui10RDYtRUlQVFF4eGlmaTNIT1Y1NVc1TEtKbmpIY1g4NkFnTnRnbkZ2U0ptZ0o3TG85dlJteXVKOUc3cndfblN1?oc=5",
+      "source": "Google News",
+      "published": "Sun, 25 Jan 2026 14:57:00 GMT",
+      "summary": "Freezing rain, sleet arrives in the Upstate, Western North Carolina, and Northeast Georgia  wyff4.com",
+      "search_term": "South Carolina ice storm",
+      "crawled_at": "2026-01-25T11:53:21.680324"
+    },
+    {
+      "id": "a4aa47380fda",
+      "title": "Freezing rain, sleet arrives in the Upstate, Western North Carolina, and Northeast Georgia",
+      "url": "https://www.wyff4.com/article/freezing-rain-sleet-arrive-south-carolina-ice-storm/70125947",
+      "source": "WYFF Greenville",
+      "published": "Sun, 25 Jan 2026 14:57:00 GMT",
+      "summary": "Areas in South Carolina, North Carolina, and Georgia are beginning to see a high-impact ice storm move in. ",
+      "crawled_at": "2026-01-25T11:53:28.466561"
+    },
+    {
+      "id": "70d16f00a907",
+      "title": "How do I report a power outage in South Carolina? Here's who to contact",
+      "url": "https://www.wltx.com/article/weather/weather-impact/power-outages-south-carolina/101-b1604ff5-5801-4f2c-82a5-8773baab5bd9",
+      "source": "WLTX Columbia",
+      "published": "Sun, 25 Jan 2026 14:34:25 GMT",
+      "summary": "Ice and sleet could affect electrical service in South Carolina as we head into the weekend.",
+      "crawled_at": "2026-01-25T11:53:24.504132"
+    },
+    {
+      "id": "b521fcf6c2dd",
+      "title": "Pillars of light spotted during winter storm in North Carolina",
+      "url": "https://www.wyff4.com/article/pillar-of-light-spotted-north-carolina/70127742",
+      "source": "WYFF Greenville",
+      "published": "Sun, 25 Jan 2026 13:28:00 GMT",
+      "summary": "A rare winter phenomenon was captured on camera during the winter storm Sunday.",
+      "crawled_at": "2026-01-25T11:53:28.466715"
+    },
+    {
+      "id": "008c0b4280ce",
+      "title": "City of Greenville shares winter storm road update - foxcarolina.com",
+      "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxNNEt2a2YyYk45ajQ3ODdIN28wNWlwakRhdDJpU3FMT2czaHc1cFI0R1FxQmxESGtjaFhUaGJGT1BvWVQ3OVROVFppNHRiWTA5SnRBNU1jTWlwX09fYUszWFYxTm9HM1MyTnlRb2hrLThsRmV5cVBVUXZ6WE5nV2JnYi1HXzh4UDNWWXp0bE53N1U?oc=5",
+      "source": "Google News",
+      "published": "Sun, 25 Jan 2026 13:13:00 GMT",
+      "summary": "City of Greenville shares winter storm road update  foxcarolina.com",
+      "search_term": "SC ice storm",
+      "crawled_at": "2026-01-25T11:53:22.410938"
+    },
+    {
+      "id": "0b65a1f7c839",
+      "title": "Tracking Duke Energy power outages amid winter storm in Carolinas on Jan. 25, 2026 - wbtv.com",
+      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPeWo5ZEhYenRQbWo2V3hwSVdqR1k4dGNhZGg1MGdibnJoMHl3NmtrU2FGcnM5Y0hRMHlwZDI2cmRVdzJEV05fS0dQMnNBcVRUbml6SjJ3Y2FVUGZRaVdIdkRsQlp2ajA2bFhIZjVFU3M0NDloZnhMTHJacmxOaFdZR1VlY3VhMmlUcFdCVTI0emF4Q2hVQ3Y3ckFXNmZhVG9kU1JYX0lGdzFVY1U?oc=5",
+      "source": "Google News",
+      "published": "Sun, 25 Jan 2026 11:43:00 GMT",
+      "summary": "Tracking Duke Energy power outages amid winter storm in Carolinas on Jan. 25, 2026  wbtv.com",
+      "search_term": "SC power outage ice",
+      "crawled_at": "2026-01-25T11:53:24.027595"
+    },
+    {
+      "id": "4260b2bd65ce",
+      "title": "Where is power out? Upstate South Carolina power outage map - greenvilleonline.com",
+      "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxQR1M4dVI2VC1Od2tPQ0ZiR0pIYWs2U1pvdDF2ZEtnZ0xCa1pISS04WHdCQW11U2czQ3A3WFU0SU1OVDZubVlXZ0NyVTNPT0x5Uk1nWDg5ZFNySm90UE9tYnBBQzIzbFlncm5PbmptM3dEQ0oxM1pfcVJDbkhTWU8zYXNvbS1vN082VUJXeHlqNHNzQnF2THZHbDhpSHp2V3NYVkpQcEpWclhNWkR2aGI1emhjWFl4VEtHd3h2VXZNcUxRd3ltT0RsVTlvQ1o2R3hTVlF5OS1MamRQbE0?oc=5",
+      "source": "Google News",
+      "published": "Sun, 25 Jan 2026 09:02:00 GMT",
+      "summary": "Where is power out? Upstate South Carolina power outage map  greenvilleonline.com",
+      "search_term": "SC power outage ice",
+      "crawled_at": "2026-01-25T11:53:24.027667"
+    },
+    {
+      "id": "65cf7f312e26",
+      "title": "Winter weather guide: Forecast, closings, road conditions, live cameras, power outages",
+      "url": "https://www.wyff4.com/article/winter-storm-ice-snow-south-carolina-road-closing-forecast/70059157",
+      "source": "WYFF Greenville",
+      "published": "Sun, 25 Jan 2026 08:49:00 GMT",
+      "summary": "Here is your one-stop shop for all the winter weather information you need to know in South Carolina.",
+      "crawled_at": "2026-01-25T11:53:28.466839"
+    },
+    {
+      "id": "dbdbc3ce9a5f",
+      "title": "New timeline for ice storm expected in Upstate, Western North Carolina, Northeast Georgia - wyff4.com",
+      "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE5tcHVtX1pjZE5kOHJhQ1owOTlVOVJUREN0RGhIUEdjYTF5TTJZTHlyX3labWNNRW9iVWZWSVFlN2lWS1EwZ21lZXBmM0pYcTNzbmtUTWhlRTRwbG9LRm5aY2MyTTBfYU1QSDZJZkVYOUJDUWh0QjFRMVVlX3o?oc=5",
+      "source": "Google News",
+      "published": "Sun, 25 Jan 2026 08:18:00 GMT",
+      "summary": "New timeline for ice storm expected in Upstate, Western North Carolina, Northeast Georgia  wyff4.comWinter weather guide: Forecast, closings, road conditions, live cameras, power outages  wyff4.comSouth Carolina winter weather hotline is active  wyff4.comIce storm warning still in effect for Columbi",
+      "search_term": "South Carolina ice storm",
+      "crawled_at": "2026-01-25T11:53:21.680236"
+    },
+    {
+      "id": "a962d1b09626",
+      "title": "New timeline for ice storm expected in Upstate, Western North Carolina, Northeast Georgia",
+      "url": "https://www.wyff4.com/article/ice-storm-south-carolina-timeline/70120646",
+      "source": "WYFF Greenville",
+      "published": "Sun, 25 Jan 2026 08:18:00 GMT",
+      "summary": "Areas in South Carolina and North Carolina are expecting a high-impact ice storm to move in Saturday night and continue into Sunday.  ",
+      "crawled_at": "2026-01-25T11:53:28.466910"
+    },
+    {
+      "id": "02ef827e2784",
+      "title": "Warming stations open across the Midlands during winter storm",
+      "url": "https://www.wltx.com/article/weather/severe-weather/warming-stations-opening-across-the-midlands-in-advance-of-weekend-winter-storm/101-1f1b7ab1-88f8-43cd-9f1c-6b16749c17b3",
+      "source": "WLTX Columbia",
+      "published": "Sun, 25 Jan 2026 03:01:18 GMT",
+      "summary": "Where you can go to find warmth during the winter storm in South Carolina",
+      "crawled_at": "2026-01-25T11:53:24.504192"
+    },
+    {
+      "id": "2ea5a4b58182",
+      "title": "How to watch WLTX for live streaming South Carolina winter storm coverage",
+      "url": "https://www.wltx.com/article/weather/weather-impact/how-to-get-wltx-plus-on-tv/101-cc2944b0-f63d-4432-b6d2-3e7a67f279e6",
+      "source": "WLTX Columbia",
+      "published": "Sun, 25 Jan 2026 02:18:41 GMT",
+      "summary": "Download on your TV. Watch for free.",
+      "crawled_at": "2026-01-25T11:53:24.504260"
+    },
+    {
+      "id": "74d32ad0c28e",
+      "title": "South Carolina state officials warn of dayslong power outages, dangerous travel",
+      "url": "https://www.wltx.com/article/weather/weather-impact/south-carolina-winter-storm-update-governor-henry-mcmaster/101-b17d4382-a6fa-4508-83e1-3b2bced9d777",
+      "source": "WLTX Columbia",
+      "published": "Sun, 25 Jan 2026 00:19:22 GMT",
+      "summary": "South Carolina officials warn of dayslong power outages, dangerous travel",
+      "crawled_at": "2026-01-25T11:53:24.504313"
+    },
+    {
+      "id": "8903f48d63a8",
+      "title": "South Carolina school closures and schedule changes",
+      "url": "https://www.wltx.com/article/news/local/south-carolina-school-closures-schedule-changes-winter-storm/101-6b43efba-2e2c-4c20-b635-0a01a3a90816",
+      "source": "WLTX Columbia",
+      "published": "Sat, 24 Jan 2026 20:44:10 GMT",
+      "summary": "With a winter storm expected to impact the Midlands over the weekend, some schools are altering their schedules. Here's a list.",
+      "crawled_at": "2026-01-25T11:53:24.504358"
+    },
+    {
+      "id": "be0791c97499",
+      "title": "WATCH: Gov. McMaster holds press conference ahead of expected winter storm",
+      "url": "https://www.wistv.com/2026/01/24/watch-mcmaster-hold-press-conference-ahead-expected-winter-storm/",
+      "source": "WIS Columbia",
+      "published": "Sat, 24 Jan 2026 20:25:49 -0500",
+      "summary": "South Carolina Gov. Henry McMaster is holding a press conference about state preparation ahead of this weekend’s expected.",
+      "crawled_at": "2026-01-25T11:53:28.158094"
+    },
+    {
+      "id": "5cc7b9c0a6a2",
+      "title": "Stream live on WFMY+ | Winter storm coverage in North Carolina - wfmynews2.com",
+      "url": "https://news.google.com/rss/articles/CBMi7AFBVV95cUxPUm1maXA0UG1IalI4dmF4a1prczJIRlZ6NFRpSVdLVWx4Q0lTOUhHWUdaOHV0WUxSTEhJWnFZbjNqYXU2ZGtXRk5CakczMkJuUnU3UlhQTXJMWjhUYVN4MmNTWVJkUHB5T3Y4YnhISmRZeHpTUnBWNGNOUlpQa3Jtc1Bud2ZmdTlZaHpmdzljaE5qQXZBLUktRUpuVlJ2bVYzVks5Z3FDaVhldHdnNm1jWlpJVXpQOFZVbnZrZmFwWVJWbnItQUZ0MkFGNll4SzVnSEJxSHVfMHhTcDlob2VYeDB4WDFNcTdlS0pXLQ?oc=5",
+      "source": "Google News",
+      "published": "Sat, 24 Jan 2026 20:16:00 GMT",
+      "summary": "Stream live on WFMY+ | Winter storm coverage in North Carolina  wfmynews2.com",
+      "search_term": "South Carolina winter storm",
+      "crawled_at": "2026-01-25T11:53:23.212708"
+    },
+    {
+      "id": "bd27d7e5e4d6",
+      "title": "Trump approves Emergency Declaration for South Carolina ahead of winter storm",
+      "url": "https://www.wltx.com/article/news/local/president-trump-approves-emergency-declaration-for-south-carolina-ahead-of-winter-storm-fema/101-02fa44be-dd59-4709-8da2-a0f5026ba993",
+      "source": "WLTX Columbia",
+      "published": "Sat, 24 Jan 2026 19:34:07 GMT",
+      "summary": "FEMA disaster relief efforts, federal aid will be available to state",
+      "crawled_at": "2026-01-25T11:53:24.504404"
+    },
+    {
+      "id": "9cc268da6255",
+      "title": "South Carolina moves to OPCON 1 ahead of winter storm",
+      "url": "https://www.wistv.com/2026/01/24/south-carolina-moves-opcon-1-ahead-winter-storm/",
+      "source": "WIS Columbia",
+      "published": "Sat, 24 Jan 2026 17:34:45 -0500",
+      "summary": "South Carolina Emergency Management said that the State Emergency Operations Center is operating at OPCON 1 as of Saturday due to winter weather impacts.",
+      "crawled_at": "2026-01-25T11:53:28.158183"
+    },
+    {
+      "id": "5b42f2bc9900",
+      "title": "South Carolina allows one-time early prescription refills ahead of winter storm",
+      "url": "https://www.wltx.com/article/news/local/emergency-prescription-refill-south-carolina/101-bfc6fcdd-fa3e-492f-9cbc-f79ee510b3b3",
+      "source": "WLTX Columbia",
+      "published": "Sat, 24 Jan 2026 16:01:16 GMT",
+      "summary": "South Carolina Department of Public Health says residents can get a one-time early refill of certain prescriptions due through Jan. 30 as the storm approaches.",
+      "crawled_at": "2026-01-25T11:53:24.504467"
+    },
+    {
+      "id": "1b99d544f67a",
+      "title": "DPH authorizes one-time early refills of prescriptions because of winter storm",
+      "url": "https://www.wistv.com/2026/01/24/dph-authorizes-one-time-early-refills-prescriptions-because-winter-storm/",
+      "source": "WIS Columbia",
+      "published": "Sat, 24 Jan 2026 13:16:03 -0500",
+      "summary": "The South Carolina Department of Public Health (DPH) said it has authorized a one-time early refill of Schedule III-V prescriptions for valid refills due through Jan. 30, 2026.",
+      "crawled_at": "2026-01-25T11:53:28.158267"
+    },
+    {
+      "id": "d43689974fa5",
+      "title": "Weather blog: Winter storm updates for South Carolina - southcarolinapublicradio.org",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPZ3N2U0hpWWZaRUhHa195TDg4LTlTdUY5Rk14a3VIbjRCcFZ2aFdkTFlZT2tpTkd5YTNMZWR6QXFkQVc3d250UWIyYTVIMGVYSEhDNWRiYUl6R2ZRVWdrQ3NrdzBndDdrWjZmNWdYQ1lFWHFfekJiQWV3WmpnZ1EySFpUc05aTjFMdzh6dTlvN05rcVVaZlNxTzYzcC14UnhyamxWWjRSWHMxTHRaaU13bTd3?oc=5",
+      "source": "Google News",
+      "published": "Sat, 24 Jan 2026 13:16:00 GMT",
+      "summary": "Weather blog: Winter storm updates for South Carolina  southcarolinapublicradio.org",
+      "search_term": "South Carolina ice storm",
+      "crawled_at": "2026-01-25T11:53:21.680409"
+    },
+    {
+      "id": "785079089535",
+      "title": "FEMA: Federal disaster relief approved for South Carolina",
+      "url": "https://www.wistv.com/2026/01/24/fema-federal-disaster-relief-approved-south-carolina/",
+      "source": "WIS Columbia",
+      "published": "Sat, 24 Jan 2026 10:29:21 -0500",
+      "summary": "On Saturday, FEMA announced that federal disaster assistance is available for the state to supplement response efforts due to emergency conditions from the severe winter storm starting Jan. 21, and continuing.",
+      "crawled_at": "2026-01-25T11:53:28.158314"
+    },
+    {
+      "id": "a9ac9adb1a90",
+      "title": "South Carolina National Guard gives deployment update ahead of winter storm",
+      "url": "https://www.wistv.com/2026/01/23/south-carolina-national-guard-gives-deployment-update-ahead-winter-storm/",
+      "source": "WIS Columbia",
+      "published": "Sat, 24 Jan 2026 09:58:26 -0500",
+      "summary": "The South Carolina National Guard announced it is preparing to deploy throughout the state.",
+      "crawled_at": "2026-01-25T11:53:28.158356"
+    },
+    {
+      "id": "879427db35ba",
+      "title": "South Carolina National Guard mobilizes as winter storm approaches",
+      "url": "https://www.wltx.com/article/news/local/south-carolina-national-guard-scng-winter-storm/101-be7f76b5-e55f-4a7c-afa7-c32ea53db728",
+      "source": "WLTX Columbia",
+      "published": "Sat, 24 Jan 2026 04:33:08 GMT",
+      "summary": "The South Carolina National Guard is preparing to assist communities as a winter storm approaches, with troops ready to clear roads and help stranded drivers.",
+      "crawled_at": "2026-01-25T11:53:24.504499"
+    }
+  ]
+}
