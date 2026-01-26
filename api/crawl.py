@@ -47,6 +47,9 @@ SEARCH_TERMS = [
     "South Carolina school closings ice",
     "Spartanburg SC winter storm",
     "Midlands SC ice storm",
+    "Red Cross South Carolina ice storm",
+    "American Red Cross SC winter storm",
+    "Red Cross shelter South Carolina",
 ]
 
 USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
@@ -112,6 +115,11 @@ def normalize_title(title):
 
 def is_relevant(title, description=''):
     text = f"{title} {description}".lower()
+
+    # ALWAYS include Red Cross articles about SC
+    if 'red cross' in text and any(loc in text for loc in ['south carolina', ' sc ', 'carolina']):
+        return True
+
     # Location matching - South Carolina only
     location_match = any(term in text for term in [
         'south carolina', ' sc ', 'columbia', 'greenville', 'charleston',
