@@ -116,6 +116,20 @@ def normalize_title(title):
 def is_relevant(title, description=''):
     text = f"{title} {description}".lower()
 
+    # EXCLUDE crime/police stories - not relevant to winter storm
+    exclude_terms = [
+        'shooting', 'shot', 'murder', 'killed', 'homicide', 'gunfire', 'gunman',
+        'arrest', 'arrested', 'charged', 'custody', 'suspect', 'investigation',
+        'standoff', 'police say', 'sheriff', 'deputies',
+        'robbery', 'assault', 'stabbing', 'stabbed',
+        'drug', 'trafficking', 'cocaine', 'heroin', 'fentanyl', 'meth',
+        'machine gun', 'weapon', 'firearm',
+        'missing person', 'found dead', 'body found',
+        'traffic stop', 'pulled over', 'dui', 'dwi',
+    ]
+    if any(term in text for term in exclude_terms):
+        return False
+
     # ALWAYS include Red Cross articles about SC
     if 'red cross' in text and any(loc in text for loc in ['south carolina', ' sc ', 'carolina']):
         return True
