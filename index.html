@@ -53,6 +53,15 @@
         .loading-text { color: #c62828; font-weight: 500; font-size: 14px; }
         .loading-sub { color: #666; font-size: 11px; margin-top: 4px; }
         .live-badge { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: 8px; margin-left: 6px; background: #e8f5e9; color: #2e7d32; }
+        .filter-bar { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; flex-wrap: wrap; }
+        .filter-btn { padding: 5px 12px; border-radius: 15px; border: 1px solid #e0e0e0; background: white; font-size: 10px; cursor: pointer; transition: all 0.2s; }
+        .filter-btn:hover { background: #f5f5f5; }
+        .filter-btn.active { background: #c62828; color: white; border-color: #c62828; }
+        .filter-btn.rc-filter { border-color: #c62828; color: #c62828; }
+        .filter-btn.rc-filter.active { background: #c62828; color: white; }
+        .filter-input { padding: 5px 10px; border-radius: 15px; border: 1px solid #e0e0e0; font-size: 10px; width: 150px; }
+        .filter-select { padding: 5px 10px; border-radius: 15px; border: 1px solid #e0e0e0; font-size: 10px; background: white; }
+        .filter-count { font-size: 10px; color: #666; margin-left: auto; }
     </style>
 </head>
 <body>
@@ -102,6 +111,14 @@
         <div class="main-content">
             <div class="articles-section">
                 <h2 class="section-title">Latest Coverage <span class="live-badge">LIVE</span></h2>
+                <div class="filter-bar">
+                    <button class="filter-btn rc-filter" id="rcFilter" onclick="toggleRCFilter()">&#9733; Red Cross Only</button>
+                    <input type="text" class="filter-input" id="searchFilter" placeholder="Search articles..." oninput="applyFilters()">
+                    <select class="filter-select" id="sourceFilter" onchange="applyFilters()">
+                        <option value="">All Sources</option>
+                    </select>
+                    <span class="filter-count" id="filterCount"></span>
+                </div>
                 <div id="articlesContainer"><p style="color: #999; padding: 20px; text-align: center;">Loading articles...</p></div>
             </div>
             <div class="sidebar">
@@ -126,6 +143,54 @@
     <script>
         let isLoading = false;
         let currentArticles = [];
+        let rcFilterActive = false;
+
+        function toggleRCFilter() {
+            rcFilterActive = !rcFilterActive;
+            document.getElementById('rcFilter').classList.toggle('active', rcFilterActive);
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchFilter').value.toLowerCase();
+            const sourceFilter = document.getElementById('sourceFilter').value;
+
+            let filtered = currentArticles.filter(a => {
+                const text = (a.title + ' ' + (a.summary || '')).toLowerCase();
+                const isRC = text.includes('red cross');
+
+                // Red Cross filter
+                if (rcFilterActive && !isRC) return false;
+
+                // Search filter
+                if (searchTerm && !text.includes(searchTerm)) return false;
+
+                // Source filter
+                if (sourceFilter && a.source !== sourceFilter) return false;
+
+                return true;
+            });
+
+            renderArticles(filtered);
+            document.getElementById('filterCount').textContent =
+                filtered.length === currentArticles.length ? '' : `Showing ${filtered.length} of ${currentArticles.length}`;
+        }
+
+        function renderArticles(articles) {
+            // Sort: Red Cross articles first
+            const redCrossArticles = articles.filter(a => (a.title + ' ' + (a.summary || '')).toLowerCase().includes('red cross'));
+            const otherArticles = articles.filter(a => !(a.title + ' ' + (a.summary || '')).toLowerCase().includes('red cross'));
+            const sortedArticles = [...redCrossArticles, ...otherArticles];
+
+            let html = '';
+            sortedArticles.forEach(a => {
+                const isRedCross = (a.title + ' ' + (a.summary || '')).toLowerCase().includes('red cross');
+                const cardClass = isRedCross ? 'article-card red-cross' : 'article-card';
+                const summary = a.summary ? '<p class="summary">' + esc(a.summary.slice(0,120)) + '</p>' : '';
+                html += '<div class="' + cardClass + '"><div class="article-source">' + esc(a.source) + '</div><h3 class="article-title"><a href="' + esc(a.url) + '" target="_blank">' + esc(a.title) + '</a></h3>' + summary + '<div class="article-meta">' + esc((a.published || '').slice(0, 25)) + '</div></div>';
+            });
+            document.getElementById('articlesContainer').innerHTML = html || '<p style="color:#999;padding:20px;text-align:center;">No articles match filters.</p>';
+        }
 
         async function refreshNews() {
             if (isLoading) return;
@@ -169,19 +234,15 @@
             document.getElementById('lastUpdated').textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
             document.getElementById('footerTime').textContent = now.toISOString().slice(0, 16).replace('T', ' ');
 
-            // Sort: Red Cross articles first
-            const redCrossArticles = articles.filter(a => (a.title + ' ' + (a.summary || '')).toLowerCase().includes('red cross'));
-            const otherArticles = articles.filter(a => !(a.title + ' ' + (a.summary || '')).toLowerCase().includes('red cross'));
-            const sortedArticles = [...redCrossArticles, ...otherArticles];
-
-            let html = '';
-            sortedArticles.forEach(a => {
-                const isRedCross = (a.title + ' ' + (a.summary || '')).toLowerCase().includes('red cross');
-                const cardClass = isRedCross ? 'article-card red-cross' : 'article-card';
-                const summary = a.summary ? '<p class="summary">' + esc(a.summary.slice(0,120)) + '</p>' : '';
-                html += '<div class="' + cardClass + '"><div class="article-source">' + esc(a.source) + '</div><h3 class="article-title"><a href="' + esc(a.url) + '" target="_blank">' + esc(a.title) + '</a></h3>' + summary + '<div class="article-meta">' + esc((a.published || '').slice(0, 25)) + '</div></div>';
+            // Populate source dropdown
+            const sourceSelect = document.getElementById('sourceFilter');
+            sourceSelect.innerHTML = '<option value="">All Sources</option>';
+            Object.keys(sources).sort().forEach(src => {
+                sourceSelect.innerHTML += '<option value="' + esc(src) + '">' + esc(src) + ' (' + sources[src] + ')</option>';
             });
-            document.getElementById('articlesContainer').innerHTML = html || '<p style="color:#999;padding:20px;text-align:center;">No articles found.</p>';
+
+            // Render with current filters
+            applyFilters();
 
             let srcHtml = '';
             Object.entries(sources).sort((a,b) => b[1] - a[1]).forEach(([name, count]) => {

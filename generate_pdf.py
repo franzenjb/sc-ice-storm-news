@@ -204,10 +204,33 @@ def generate_pdf(output_path):
                 story.append(Paragraph(f"- {r}", bullet_style))
             story.append(Spacer(1, 8))
 
-    # Separate Red Cross articles
+    # Filter to last 48 hours only
+    from datetime import timedelta
+    cutoff = now - timedelta(hours=48)
+
+    def is_recent(article):
+        pub = article.get('published', '')
+        if not pub:
+            return True  # Include if no date
+        try:
+            # Try parsing common date formats
+            for fmt in ['%a, %d %b %Y %H:%M:%S', '%a, %d %b %Y %H:%M:%S %z', '%Y-%m-%dT%H:%M:%S']:
+                try:
+                    pub_date = datetime.strptime(pub[:25].strip(), fmt)
+                    return pub_date >= cutoff
+                except:
+                    continue
+            # Check if 2026 is in the date string (current year)
+            return '2026' in pub and ('Jan' in pub or '01' in pub[:10])
+        except:
+            return True
+
+    recent_articles = [a for a in articles if is_recent(a)]
+
+    # Separate Red Cross articles (recent only)
     red_cross_articles = []
     other_articles = []
-    for a in articles:
+    for a in recent_articles:
         text = (a.get('title', '') + ' ' + a.get('summary', '')).lower()
         if 'red cross' in text:
             red_cross_articles.append(a)
