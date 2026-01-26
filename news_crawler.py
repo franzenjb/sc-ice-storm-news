@@ -104,12 +104,29 @@ class NewsCrawler:
     def _is_relevant(self, title: str, description: str = "") -> bool:
         """Check if article is relevant to SC ice storm."""
         text = f"{title} {description}".lower()
+
+        # Exclude crime/police stories
+        exclude_terms = [
+            'shooting', 'shot', 'murder', 'killed', 'arrest', 'arrested',
+            'standoff', 'police', 'suspect', 'crime', 'robbery', 'assault',
+            'homicide', 'investigation', 'custody', 'charged', 'victim',
+            'mosque', 'church shooting', 'gunfire', 'gunman'
+        ]
+        if any(term in text for term in exclude_terms):
+            return False
+
         # Must mention South Carolina or SC
         sc_match = any(term in text for term in ['south carolina', ' sc ', 'carolina'])
-        # Must mention ice/winter weather
+
+        # Must mention ACTUAL winter weather terms (not just "emergency" or "cold")
         weather_match = any(term in text for term in [
-            'ice', 'winter', 'storm', 'freeze', 'freezing', 'cold',
-            'power outage', 'shelter', 'emergency', 'weather'
+            'ice storm', 'winter storm', 'freezing rain', 'frozen',
+            'freeze warning', 'ice accumulation', 'sleet', 'black ice',
+            'power outage', 'outages', 'without power', 'power restored',
+            'warming shelter', 'warming center', 'road conditions',
+            'hazardous roads', 'icy roads', 'school closing', 'school delay',
+            'winter weather', 'cold snap', 'below freezing', 'wind chill',
+            'red cross shelter', 'emergency shelter'
         ])
         return sc_match and weather_match
 

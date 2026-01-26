@@ -3,460 +3,564 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SC Ice Storm News | DR 153-26</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <title>SC Ice Storm News | American Red Cross</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-            line-height: 1.5;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
         .header {
-            background: #d32f2f;
+            background-color: #d32f2f;
             color: white;
-            padding: 20px 24px;
+            padding: 24px;
+            text-align: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
-        .header h1 { font-size: 24px; margin-bottom: 4px; }
-        .header .subtitle { font-size: 13px; opacity: 0.9; }
-        .header .meta { font-size: 11px; margin-top: 8px; opacity: 0.8; }
 
-        .controls {
-            background: white;
-            padding: 16px 24px;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            align-items: center;
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
         }
-        .controls label { font-size: 13px; display: flex; align-items: center; gap: 6px; cursor: pointer; }
-        .controls input[type="checkbox"] { width: 16px; height: 16px; accent-color: #c62828; }
-        .controls input[type="text"] {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 13px;
-            width: 200px;
+
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
         }
-        .controls select {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 13px;
-        }
-        .controls .filter-count {
+
+        .header .updated {
             font-size: 12px;
-            color: #666;
-            margin-left: auto;
+            margin-top: 12px;
+            opacity: 0.8;
         }
-        .btn {
-            background: #c62828;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 13px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .btn:hover { background: #b71c1c; }
-        .btn:disabled { background: #999; cursor: not-allowed; }
 
-        .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
 
         .stats-bar {
             display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 16px;
+            margin-bottom: 24px;
             flex-wrap: wrap;
         }
+
         .stat-card {
             background: white;
-            border-radius: 6px;
-            padding: 12px 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 16px 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             flex: 1;
-            min-width: 120px;
+            min-width: 150px;
         }
-        .stat-card .number { font-size: 28px; font-weight: bold; color: #c62828; }
-        .stat-card .label { font-size: 11px; color: #666; text-transform: uppercase; }
 
-        .loading {
-            text-align: center;
-            padding: 60px;
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #c62828;
+        }
+
+        .stat-card .label {
+            font-size: 12px;
             color: #666;
+            text-transform: uppercase;
         }
-        .loading::after {
-            content: '';
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #c62828;
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-left: 10px;
-            vertical-align: middle;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .article {
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .articles-section {
             background: white;
-            border-radius: 6px;
-            padding: 16px 20px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border-left: 4px solid transparent;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 24px;
         }
-        .article.red-cross {
-            border-left-color: #c62828;
-            background: #fff5f5;
+
+        .section-title {
+            font-size: 18px;
+            color: #c62828;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ffcdd2;
         }
-        .article .source {
+
+        .article-card {
+            padding: 16px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .article-card:last-child {
+            border-bottom: none;
+        }
+
+        .article-source {
             font-size: 11px;
-            font-weight: 600;
             color: #c62828;
             text-transform: uppercase;
+            font-weight: 600;
             margin-bottom: 4px;
         }
-        .article .rc-badge {
-            background: #c62828;
-            color: white;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 3px;
-            margin-left: 8px;
-        }
-        .article h3 {
-            font-size: 15px;
-            margin-bottom: 6px;
+
+        .article-title {
+            font-size: 16px;
             line-height: 1.4;
+            margin-bottom: 8px;
         }
-        .article h3 a { color: #333; text-decoration: none; }
-        .article h3 a:hover { color: #c62828; }
-        .article .summary {
-            font-size: 13px;
+
+        .article-title a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .article-title a:hover {
+            color: #c62828;
+            text-decoration: underline;
+        }
+
+        .summary {
+            font-size: 14px;
             color: #666;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
-        .article .date {
-            font-size: 11px;
+
+        .article-meta {
+            font-size: 12px;
             color: #999;
         }
 
-        .section-header {
-            background: #c62828;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 6px;
-            margin-bottom: 12px;
-            font-weight: 600;
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        .sidebar-card h3 {
             font-size: 14px;
+            color: #c62828;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .source-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+        }
+
+        .source-item:last-child {
+            border-bottom: none;
+        }
+
+        .source-count {
+            font-weight: bold;
+            color: #c62828;
+        }
+
+        .search-terms {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .term-tag {
+            background: #ffebee;
+            color: #c62828;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
         }
 
         .footer {
             text-align: center;
-            padding: 20px;
-            font-size: 11px;
+            padding: 24px;
             color: #999;
+            font-size: 12px;
         }
 
-        .hidden { display: none !important; }
+        .refresh-btn {
+            display: inline-block;
+            background: #c62828;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 13px;
+            margin-top: 16px;
+        }
+
+        .refresh-btn:hover {
+            background: #b71c1c;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>South Carolina Ice Storm</h1>
-        <div class="subtitle">DR 153-26 | Disaster News Monitoring</div>
-        <div class="meta">Prepared By: Gary Pelletier | <span id="currentDate"></span></div>
-    </div>
-
-    <div class="controls">
-        <label>
-            <input type="checkbox" id="rcOnly">
-            Red Cross Only
-        </label>
-        <input type="text" id="searchInput" placeholder="Search articles...">
-        <select id="sourceFilter">
-            <option value="">All Sources</option>
-        </select>
-        <button class="btn" id="exportPdf">Export PDF</button>
-        <button class="btn" id="refreshBtn">Refresh</button>
-        <span class="filter-count" id="filterCount"></span>
+        <div class="subtitle">News Monitoring | American Red Cross</div>
+        <div class="updated">Last updated: January 26, 2026 at 01:09 PM</div>
     </div>
 
     <div class="container">
         <div class="stats-bar">
             <div class="stat-card">
-                <div class="number" id="totalCount">-</div>
-                <div class="label">Articles</div>
+                <div class="number">26</div>
+                <div class="label">Total Articles</div>
             </div>
             <div class="stat-card">
-                <div class="number" id="sourceCount">-</div>
-                <div class="label">Sources</div>
+                <div class="number">4</div>
+                <div class="label">News Sources</div>
             </div>
             <div class="stat-card">
-                <div class="number" id="rcCount">-</div>
-                <div class="label">Red Cross</div>
+                <div class="number">0</div>
+                <div class="label">Red Cross Mentions</div>
             </div>
         </div>
 
-        <div id="content">
-            <div class="loading">Loading news articles</div>
+        <div class="main-content">
+            <div class="articles-section">
+                <h2 class="section-title">Latest Coverage</h2>
+                
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMi2wFBVV95cUxNdnZEYWNvOFd5Y1U1UDM4c01yMEFkWkVzQ21OcHZHRTZTMUQ2ajVhNlBmVFdUbTVheVlHS3FGcTk1dzdJYTI2NVQ2bU5abmwxcGo2b2lNMmJkeEVGYjdNUkhkNTBYRUhkOExTZjdaZ1FBbG9qMWtPOTVxMUlLaGk0cnYzbU1RWWMyWkZuc3NhdGQ2cWVvVkFBbmx5SE5hS1BqTUlwOTIyR2dhc2Vaa1hMaGw1cFFvR1JKS1Q3VS1ta01LOW5zTkRhRW90eHE4bEF1cjR3aks2bVFmd00?oc=5" target="_blank">PHOTOS: Scenes from the 2026 winter storm in Upstate South Carolina - greenvilleonline.com</a>
+                </h3>
+                <p class="summary">PHOTOS: Scenes from the 2026 winter storm in Upstate South Carolina  greenvilleonline.com</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 22:46:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WLTX Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wltx.com/article/weather/weather-impact/how-to-get-wltx-plus-on-tv/101-cc2944b0-f63d-4432-b6d2-3e7a67f279e6" target="_blank">How to watch WLTX for live streaming South Carolina winter storm coverage</a>
+                </h3>
+                <p class="summary">Download on your TV. Watch for free.</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 22:22:01</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMi4gFBVV95cUxQZnNOanRfNDhQcmRKWDJmcVJCYUwxMDVWUEFTZDIyTTRuNERoRkdJeTBMQ0hsRmtjQzBDcHpqNnh0SVdvNUJsV3R2cFR1UmtCVThxUTNXRUhEM0dmLVFDTy1PaFh0cXpBN3l6UlRIVnNVVGxJRGdNRHVtQlQtTmtMYl9MQ2FPOUhjSV9zUDRJTFBaUnVtbE5rMHVLUkxvbzUtVTBRSzQ2Yi1GT0YwSm80M0c1OFZGNHJrV2YzcUYtTkxyTVo4QU9QN19zSEJBNjRCc1VpcUxiNGNYVG52WEJqcmNR?oc=5" target="_blank">Duke Energy reports over 18,000 outages in Carolinas, with more expected as ice threatens trees and power lines - Duke Energy | News Center</a>
+                </h3>
+                <p class="summary">Duke Energy reports over 18,000 outages in Carolinas, with more expected as ice threatens trees and power lines  Duke Energy | News Center</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 21:38:02</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMikwFBVV95cUxOYlh0QmxjRHMzaFhYb2tRSWNKa245QXU5QmV6cXlEWU5vLTl0SlZ6UEVlQlZ5OVBfVkJfQzEtTHFOblNoYWdLY0xMVTZlNVhQaWRxbWZHcUt5Q2dsVmdLdTFoRVh6U1hYRmRjamFObVVlTERYb2V1bGdKRmlaaDdPdWpuZ2p0aURBNGc3alNsUnhwWjQ?oc=5" target="_blank">LIST: Power outages reported as freezing rain moves through SC - wach.com</a>
+                </h3>
+                <p class="summary">LIST: Power outages reported as freezing rain moves through SC  wach.com</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 20:30:03</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMi4wFBVV95cUxOSDNJZ1o4MHFUMUFpbUZtVXhiRmp2bEZkazNBT2tXcTgwS29Xc3luM09BRmtDR05lRHN1Vm5VVk40cTJ3VVRTUTdrdmJLV0VUcXFWc0NwZ3F1NFNob0F6SFhrWXNJLWtySlljaGxNUGh2NHNHU0lVOWhCenFmeV9odFhDMFItZnZMRG5PaU5WOVRpa2VVbWNSUHN4NnNia1l3OGxqV2RPNkFDd3QtZ3FpeHloNzlFN2VPZVFKRlZGbkZZOWZlT1ppLXVVNnJxNHFkdlExWVhnZE1xMEF0OGNkVXdJdw?oc=5" target="_blank">1:45 p.m. ice storm update | Rock Hill, SC starting to see ice form on roadways - wcnc.com</a>
+                </h3>
+                <p class="summary">1:45 p.m. ice storm update | Rock Hill, SC starting to see ice form on roadways  wcnc.com</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 18:45:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMimAFBVV95cUxQU3Z6SGxqbHhOeDZteEtJZTRVeWVHNy1hZGM1bU52WUNMNWhrUGpicHFCLVJJRUhncURXZVRza1p2cE1aSVFESjlkTlU2Rm1PaVFDbzAzZERNbUJNZzVwM3RDTE83MTJFdnJNUFo1UTFUU3hDSXFZdFVScU9zR0x2SVJiSzlxYlhZZFd1a3NrN18wdnBCVmJYVw?oc=5" target="_blank">PHOTOS: Ice covers South Carolina as winter weather sweeps through - wach.com</a>
+                </h3>
+                <p class="summary">PHOTOS: Ice covers South Carolina as winter weather sweeps through  wach.com</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 18:40:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WLTX Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wltx.com/article/weather/check-it-out-some-chill-photos-from-the-winter-storm-fern-in-south-carolina/101-2c5fca3e-e242-4bd8-ab55-2fd184022fad" target="_blank">Check it out: Some chill photos from the winter storm in South Carolina</a>
+                </h3>
+                <p class="summary">Viewers have been sending in photos of their surroundings of the wintry weather passing through the state. Here are some from Sunday, Jan. 25</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 18:01:33</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WIS Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wistv.com/2026/01/25/south-carolina-activates-winter-weather-emergency-hotline/" target="_blank">South Carolina activates winter weather emergency hotline</a>
+                </h3>
+                <p class="summary">South Carolina residents can call the state’s emergency winter weather hotline for more official information.</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 13:39:31</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WIS Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wistv.com/2026/01/25/sc-winter-weather-hotline-activated/" target="_blank">SC winter weather hotline activated</a>
+                </h3>
+                <p class="summary">South Carolina Emergency Management Division says residents with questions about the winter weather response can call the state’s toll-free hotline.</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 12:37:57</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMifEFVX3lxTE5tcHVtX1pjZE5kOHJhQ1owOTlVOVJUREN0RGhIUEdjYTF5TTJZTHlyX3labWNNRW9iVWZWSVFlN2lWS1EwZ21lZXBmM0pYcTNzbmtUTWhlRTRwbG9LRm5aY2MyTTBfYU1QSDZJZkVYOUJDUWh0QjFRMVVlX3o?oc=5" target="_blank">New timeline for ice storm expected in Upstate, Western North Carolina, Northeast Georgia - wyff4.com</a>
+                </h3>
+                <p class="summary">New timeline for ice storm expected in Upstate, Western North Carolina, Northeast Georgia  wyff4.comDrivers warned to stay off roads. Extreme cold in forecast. Live updates.  greenvilleonline.comWATCH: Gov. McMaster holds press conference ahead of expected winter storm  wistv.com</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 08:18:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMiwAFBVV95cUxOdGF4elU5LXNwSzI4ZnBSNjVnNGlTTG5vU3ZkSzYwbzI5QndtXzhtLS03RGlVSFV5X2EzbE04VVRSUXN1cm1Jam1hczd3WktsYkR2eGdXRUUtNFhVSlpyeHQzWk1rYWdXRXl4QUdfeURYT3c2VXFGdXk5SlJnMG8wajNOZVRpLVpTN1BFWDBJMlFDTWU2SFAwaGYxWmtGVXpPejhRSGdHZFRyQ3BlNFlEbmoteG5kN0JseHN1amZVSk8?oc=5" target="_blank">Waffle Houses close in South Carolina amid major winter storm - USA Today</a>
+                </h3>
+                <p class="summary">Waffle Houses close in South Carolina amid major winter storm  USA Today</p>
+                <div class="article-meta">
+                    <span class="date">Sun, 25 Jan 2026 03:11:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WYFF Greenville</div>
+                <h3 class="article-title">
+                    <a href="https://www.wyff4.com/article/south-carolina-schools-universities-elearning-remote/70099314" target="_blank">School districts, universities announce changes because of winter storm</a>
+                </h3>
+                <p class="summary">School districts and universities in South Carolina are making changes due to the weekend winter storm and lingering impacts.</p>
+                <div class="article-meta">
+                    <span class="date">Mon, 26 Jan 2026 17:52:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WYFF Greenville</div>
+                <h3 class="article-title">
+                    <a href="https://www.wyff4.com/article/north-carolina-schools-universities-elearning-remote/70113143" target="_blank">NC: School districts, universities announce changes ahead of winter storm</a>
+                </h3>
+                <p class="summary">School districts and universities in North Carolina are making plans for Monday due to the weekend winter storm and lingering impacts. </p>
+                <div class="article-meta">
+                    <span class="date">Mon, 26 Jan 2026 17:21:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMingFBVV95cUxQNGZjcHV2Z2VxcXQ5X00xVERGUXYzMzB1ei1tNmdCY28yTjB5VHkxRzZCLWtTMGdUMXhUbFh1ZFhFTnJVR2k2bUtmbFIxbXhpNUhrMDAxMGh5eHZvR3B5T0xfWkZWODhmRERHVHoyVnh2cnVhNVFUMHI4WXBMU3NGUTA5ZEFBVlNxbUpjUUo1VlBSMnFYM2VtWUh2YXNpZw?oc=5" target="_blank">Winter weather guide: Forecast, closings, road conditions, live cameras, power outages - wyff4.com</a>
+                </h3>
+                <p class="summary">Winter weather guide: Forecast, closings, road conditions, live cameras, power outages  wyff4.comNew timeline for ice storm expected in Upstate, Western North Carolina, Northeast Georgia  wyff4.comDrivers warned to stay off roads. Extreme cold in forecast. Live updates.  greenvilleonline.com</p>
+                <div class="article-meta">
+                    <span class="date">Mon, 26 Jan 2026 16:49:26</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMinwFBVV95cUxPR2lfM0dWeVI5c0tZSU8tWFdmZGhfMExMNy11Z2M1dm4tS1RfMVlBd0xYWDdudlZrTF9lbnNzcmZ5MDF0cDNidjcxRUdJQWN2VW10N2U5VmI2dmFyeFZDT3RudFVaNV9hUXVIU29DUmZ1Z2M4QVdhcU45aE9rd2ZWVWxGbzhMLWJma1prczRGZmVSMTJkT3owVko5bVdnMnM?oc=5" target="_blank">Thousands remain without power following impact of weekend winter storm - foxcarolina.com</a>
+                </h3>
+                <p class="summary">Thousands remain without power following impact of weekend winter storm  foxcarolina.com</p>
+                <div class="article-meta">
+                    <span class="date">Mon, 26 Jan 2026 13:26:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxNdlp5RGl1b3dEOUxzaUxXN1J4aFZSd1RtX0drbURVWXVZTFhrV3Fxel92d0lwc0l2UUtiRHlabzhPbDJFSnZVZnFMZTFreDlCQWtYdXFkU0hDYTRDWmdxLV9DTHZWb0gydmpLb2xVQzFGUV9qYmJLSEVxT0ViOUt3MF9xOExtVmc1S2drV0JB?oc=5" target="_blank">Live Map: Track power outages across SC and NC as ice, sleet blankets region - wyff4.com</a>
+                </h3>
+                <p class="summary">Live Map: Track power outages across SC and NC as ice, sleet blankets region  wyff4.com</p>
+                <div class="article-meta">
+                    <span class="date">Mon, 26 Jan 2026 12:41:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WLTX Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wltx.com/article/news/local/south-carolina-school-closures-schedule-changes-winter-storm/101-6b43efba-2e2c-4c20-b635-0a01a3a90816" target="_blank">MONDAY MORNING UPDATE: South Carolina school closures and schedule changes: Clarendon County goes e-learning</a>
+                </h3>
+                <p class="summary">With a winter storm expected to impact the Midlands over the weekend, some schools are altering their schedules. Here's a list.</p>
+                <div class="article-meta">
+                    <span class="date">Mon, 26 Jan 2026 11:53:06</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMipAFBVV95cUxONkVNaHBKWUl5TlJYMGlZV0ZIcURoV3Uzc1RDQm5RWnlWNVF3NFN5LUJ4UEFrS3BpQjZVNW9IR2VxYXFkekNIeXZ1NnNDamtpbEJhbVVhTmpCV0p3OVB4YzhJYkdkaU84WmVsM0F3Ym5xaE93b3g3VGhlb001bTI1bWU4VXlkX2RGM2hMS0w2QTZlYnhzaTdJSzIyWmhrbUxNc1c0Sw?oc=5" target="_blank">37K Duke Energy customers in Carolinas lose power in wake of winter storm - wbtv.com</a>
+                </h3>
+                <p class="summary">37K Duke Energy customers in Carolinas lose power in wake of winter storm  wbtv.com</p>
+                <div class="article-meta">
+                    <span class="date">Mon, 26 Jan 2026 10:36:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WLTX Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wltx.com/article/weather/weather-impact/winter-storm-south-carolina-latest-ice-sleet-forecast/101-064ca041-3a93-49a6-9661-bf9df2a3891c" target="_blank">Conditions improving as winter storm exits, but extremely cold mornings are on the way</a>
+                </h3>
+                <p class="summary">A winter storm brought hazardous conditions to South Carolina, but conditions are improving. Now the area must get ready for a deep freeze Tuesday.</p>
+                <div class="article-meta">
+                    <span class="date">Mon, 26 Jan 2026 04:53:50</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WLTX Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wltx.com/article/news/local/south-carolina-school-closings-monday/101-2e67e20a-ad80-431b-b608-99d0630742c5" target="_blank">Will schools in South Carolina be closed Monday? Here's the answer</a>
+                </h3>
+                <p class="summary">The winter storm has forced schools to alter their schedule.</p>
+                <div class="article-meta">
+                    <span class="date">Mon, 26 Jan 2026 04:42:24</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMiggFBVV95cUxQVE9tRDg0LW5GUUF2RlZYOHRNRHEteExzcHBGUm5mZFNqclhLLW4zdVFxTXVmVjZJQXMwYW5vVjNqZVBSRzVfRUpRVmRBcHpfN3dCRnZoYmIzUkxaelhmb2xpZjR2U3d2TTBoenN0bEo4VnRNNmQ1akRORDFqVFhnNWZB?oc=5" target="_blank">Live updates of ice storm impacts in the Carolinas: Information, video, pictures and more - wyff4.com</a>
+                </h3>
+                <p class="summary">Live updates of ice storm impacts in the Carolinas: Information, video, pictures and more  wyff4.com</p>
+                <div class="article-meta">
+                    <span class="date">Mon, 26 Jan 2026 01:45:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">WLTX Columbia</div>
+                <h3 class="article-title">
+                    <a href="https://www.wltx.com/article/weather/weather-impact/latest-updates-south-carolina-midlands-winter-storm/101-31239e18-4313-4822-b6b0-93c9c53f27be" target="_blank">LIVE UPDATES: Ice storm impacts grow across the South Carolina Midlands</a>
+                </h3>
+                <p class="summary">Ice and freezing rain are already impacting roads and services across the Midlands. Track closures, outages and safety updates here.</p>
+                <div class="article-meta">
+                    <span class="date">Mon, 26 Jan 2026 01:05:40</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMi3wFBVV95cUxPZERfQWZ3ekduNy1qVk9LZkNYQTJKOFBrLVJCX25pX3c1WGdsMGVpTzRJM2tnc2dXQndnLUdFYmRPUC1RaUc1RHdUS0dXUXNUQ1JWOURHUDVFN092UTZ1MFpFRjJJa3AyNVJHVzVlaXNBUlRxZ3pLV3h0eGpHNFZaN3QtcWtaNkVKWUZSaGFlbnpYdWRKY2lObzR6WDNxQ3hlZHRXT1VhOEZ6Vnh0bUZLbGpGWVYyTldlQUtRNlZfcnpXU3QyTGZQTkhIYzQydW45TG1KRXY3aThDbzFKRElR?oc=5" target="_blank">Energy providers in Upstate SC release latest winter storm power outages - greenvilleonline.com</a>
+                </h3>
+                <p class="summary">Energy providers in Upstate SC release latest winter storm power outages  greenvilleonline.com</p>
+                <div class="article-meta">
+                    <span class="date">Mon, 26 Jan 2026 00:15:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMia0FVX3lxTE0tdnRhQ1lJbkFkUDFnRjhYb0l6R3V5bnR6dkF5ZmFSSkwyRDN3em1kdllPZ0NxcWNreVNjMEJFMHVUbGRGTTEtVDdJN3lHSXJjZFdmM2hNbGtRVmpUR2R2VUg3VHZFWlZDdE1F0gFrQVVfeXFMT19xY3gwblN1S2tvWTJrbk9lYXJ2VFFkUDF0d0lQbnZCMVZjLVhzcUY3MHdGVHpzOXFOU3U3SWxlLU1YanhJVlJqV2JsckZzQXJWM1FBTFJSM21QYU1ubzJRODRJTU9tRWdFaHM?oc=5" target="_blank">Columbia-area closures announced due to impending SC winter ice storm - thestate.com</a>
+                </h3>
+                <p class="summary">Columbia-area closures announced due to impending SC winter ice storm  thestate.com</p>
+                <div class="article-meta">
+                    <span class="date">Fri, 23 Jan 2026 16:38:00</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMid0FVX3lxTE5IMVVOTXcxTDBuV3lSMTFyMTc1TWtDTE84bVFkRktqWW9vOVZGOS1qdHJKa2E0TldscWFIcnc0MzNPN3NoemZfM0ExWksxSWgtWXJKUFdaZHFra3NCQUFOc1h3NjRGYlA0R0N1MDFPSUpvTWNFRG1B0gF3QVVfeXFMTXdGMkVXbWpISzZjQWw1Z3Y1V1FhaV9EQ2pWbUNEc0JUeTlBWW81MHZ2TldJTmdEZ2hVZGJkc3lFdmgxUFhaSFJFTEdpTTcwc3dmb0ZINVVKaUI3cXBLZ2xUTks0M0pNdlU1UDBSNUFnbG5vdnBGYmc?oc=5" target="_blank">High winds, freezing cold in Beaufort Co. forecast as winter storm heads for SC - islandpacket.com</a>
+                </h3>
+                <p class="summary">High winds, freezing cold in Beaufort Co. forecast as winter storm heads for SC  islandpacket.com</p>
+                <div class="article-meta">
+                    <span class="date">Fri, 23 Jan 2026 15:00:54</span>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <div class="article-source">Google News</div>
+                <h3 class="article-title">
+                    <a href="https://news.google.com/rss/articles/CBMieEFVX3lxTE0wQjRVZEhXS3Z0dVRhRG5FT3FDWUZ5Vzg3MC1lQVhIWEpRelp4ZmU4UmNkLXZTMDk2bkRsSG9ScDltQnNTa2plTjMtbnZWV2c1ZHp3LXVsUHhBNXJNaUN3UEw2Ump3ZEZTWDBQZFFxbHd4dDJLYjFOM9IBfkFVX3lxTE9jMHVpTTIyZHdGYkRsOGk3ejQ1aHFFWmhYbVd2MFhxSEFsR29yckV4T1VFWXg3T2psRjY0Tmlmc1d6a1d0dkJfWG1rck1FSTRvdU9wQjhFc2ZwRktjQm9oRXdBcGpiSnh1TEphUEVrMDVSZWMxUWRXSWlYWjcxUQ?oc=5" target="_blank">South Carolina’s winter weather impacts: what to know - counton2.com</a>
+                </h3>
+                <p class="summary">South Carolina’s winter weather impacts: what to know  counton2.com</p>
+                <div class="article-meta">
+                    <span class="date">Fri, 23 Jan 2026 12:55:39</span>
+                </div>
+            </div>
+            
+            </div>
+
+            <div class="sidebar">
+                <div class="sidebar-card">
+                    <h3>Sources</h3>
+                    <div class="source-item"><span class="source-name">Google News</span><span class="source-count">16</span></div><div class="source-item"><span class="source-name">WLTX Columbia</span><span class="source-count">6</span></div><div class="source-item"><span class="source-name">WIS Columbia</span><span class="source-count">2</span></div><div class="source-item"><span class="source-name">WYFF Greenville</span><span class="source-count">2</span></div>
+                </div>
+
+                <div class="sidebar-card">
+                    <h3>Search Terms</h3>
+                    <div class="search-terms">
+                        <span class="term-tag">South Carolina ice storm</span><span class="term-tag">SC ice storm</span><span class="term-tag">South Carolina winter storm</span><span class="term-tag">SC power outage ice</span><span class="term-tag">South Carolina freezing rain</span><span class="term-tag">SC winter weather emergency</span>
+                    </div>
+                </div>
+
+                <div class="sidebar-card">
+                    <h3>Quick Actions</h3>
+                    <p style="font-size: 13px; color: #666; margin-bottom: 12px;">
+                        Run <code>python news_crawler.py</code> to refresh the news feed.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="footer">
-        American Red Cross | DR 153-26 | News updated every refresh
+        American Red Cross | News Monitoring System | Generated 2026-01-26 13:09
     </div>
-
-    <script>
-        let allArticles = [];
-
-        // Set current date
-        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', {
-            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-        });
-
-        async function loadNews() {
-            document.getElementById('content').innerHTML = '<div class="loading">Loading news articles</div>';
-
-            try {
-                const resp = await fetch('/api/crawl');
-                const data = await resp.json();
-                allArticles = data.articles || [];
-
-                // Update stats
-                document.getElementById('totalCount').textContent = allArticles.length;
-                const sources = [...new Set(allArticles.map(a => a.source))];
-                document.getElementById('sourceCount').textContent = sources.length;
-
-                const rcArticles = allArticles.filter(a =>
-                    (a.title + ' ' + a.summary).toLowerCase().includes('red cross')
-                );
-                document.getElementById('rcCount').textContent = rcArticles.length;
-
-                // Populate source filter
-                const sourceSelect = document.getElementById('sourceFilter');
-                sourceSelect.innerHTML = '<option value="">All Sources</option>';
-                sources.sort().forEach(src => {
-                    sourceSelect.innerHTML += `<option value="${src}">${src}</option>`;
-                });
-
-                renderArticles();
-            } catch (err) {
-                document.getElementById('content').innerHTML =
-                    '<div style="color:#c62828;padding:40px;text-align:center;">Error loading news. Please refresh.</div>';
-            }
-        }
-
-        function isRedCross(article) {
-            return (article.title + ' ' + (article.summary || '')).toLowerCase().includes('red cross');
-        }
-
-        function renderArticles() {
-            const rcOnly = document.getElementById('rcOnly').checked;
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const sourceFilter = document.getElementById('sourceFilter').value;
-
-            let filtered = allArticles.filter(a => {
-                if (rcOnly && !isRedCross(a)) return false;
-                if (sourceFilter && a.source !== sourceFilter) return false;
-                if (search) {
-                    const text = (a.title + ' ' + a.summary + ' ' + a.source).toLowerCase();
-                    if (!text.includes(search)) return false;
-                }
-                return true;
-            });
-
-            // Update filter count
-            document.getElementById('filterCount').textContent =
-                `Showing ${filtered.length} of ${allArticles.length} articles`;
-
-            // Separate Red Cross articles
-            const rcArticles = filtered.filter(a => isRedCross(a));
-            const otherArticles = filtered.filter(a => !isRedCross(a));
-
-            let html = '';
-
-            // Red Cross section first
-            if (rcArticles.length > 0) {
-                html += '<div class="section-header">RED CROSS MENTIONS</div>';
-                rcArticles.forEach(a => {
-                    html += renderArticle(a, true);
-                });
-            }
-
-            // Other articles
-            if (otherArticles.length > 0) {
-                if (rcArticles.length > 0) {
-                    html += '<div class="section-header" style="background:#666;margin-top:20px;">OTHER NEWS</div>';
-                }
-                otherArticles.forEach(a => {
-                    html += renderArticle(a, false);
-                });
-            }
-
-            if (filtered.length === 0) {
-                html = '<div style="text-align:center;padding:40px;color:#666;">No articles match your filters.</div>';
-            }
-
-            document.getElementById('content').innerHTML = html;
-        }
-
-        function renderArticle(a, isRC) {
-            const title = a.title || 'No title';
-            const titleHighlighted = isRC ?
-                title.replace(/red cross/gi, '<span style="color:#c62828;font-weight:bold;">Red Cross</span>') :
-                title;
-
-            let summary = a.summary || '';
-            if (isRC && summary) {
-                summary = summary.replace(/red cross/gi, '<span style="color:#c62828;font-weight:bold;">Red Cross</span>');
-            }
-
-            return `
-                <div class="article ${isRC ? 'red-cross' : ''}">
-                    <div class="source">
-                        ${a.source}
-                        ${isRC ? '<span class="rc-badge">RED CROSS</span>' : ''}
-                    </div>
-                    <h3><a href="${a.url}" target="_blank">${titleHighlighted}</a></h3>
-                    ${summary ? `<div class="summary">${summary.substring(0, 200)}</div>` : ''}
-                    <div class="date">${a.published || ''}</div>
-                </div>
-            `;
-        }
-
-        // Event listeners
-        document.getElementById('rcOnly').addEventListener('change', renderArticles);
-        document.getElementById('searchInput').addEventListener('input', renderArticles);
-        document.getElementById('sourceFilter').addEventListener('change', renderArticles);
-        document.getElementById('refreshBtn').addEventListener('click', loadNews);
-
-        // PDF Export
-        document.getElementById('exportPdf').addEventListener('click', async function() {
-            const btn = this;
-            btn.disabled = true;
-            btn.textContent = 'Generating...';
-
-            try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                const pageWidth = doc.internal.pageSize.getWidth();
-                let y = 15;
-
-                // Header
-                doc.setFillColor(211, 47, 47);
-                doc.rect(0, 0, pageWidth, 35, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(20);
-                doc.setFont('helvetica', 'bold');
-                doc.text('South Carolina Ice Storm', 15, 15);
-                doc.setFontSize(11);
-                doc.setFont('helvetica', 'normal');
-                doc.text('DR 153-26 | Disaster Operations Briefing', 15, 23);
-                doc.text('Prepared By: Gary Pelletier | ' + new Date().toLocaleDateString(), 15, 30);
-
-                y = 45;
-                doc.setTextColor(0, 0, 0);
-
-                // Stats
-                doc.setFontSize(10);
-                doc.setTextColor(198, 40, 40);
-                const rcCount = allArticles.filter(a => isRedCross(a)).length;
-                doc.text(`${allArticles.length} Articles | ${rcCount} Red Cross Mentions | Generated ${new Date().toLocaleTimeString()}`, pageWidth/2, y, {align: 'center'});
-                y += 12;
-
-                // Red Cross articles first
-                const rcArticles = allArticles.filter(a => isRedCross(a));
-                const otherArticles = allArticles.filter(a => !isRedCross(a));
-
-                if (rcArticles.length > 0) {
-                    doc.setFillColor(198, 40, 40);
-                    doc.rect(15, y, pageWidth - 30, 8, 'F');
-                    doc.setTextColor(255, 255, 255);
-                    doc.setFontSize(11);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('RED CROSS MENTIONS', 20, y + 6);
-                    y += 14;
-
-                    doc.setTextColor(0, 0, 0);
-                    rcArticles.slice(0, 10).forEach(a => {
-                        if (y > 270) { doc.addPage(); y = 20; }
-                        doc.setFontSize(8);
-                        doc.setTextColor(198, 40, 40);
-                        doc.setFont('helvetica', 'bold');
-                        doc.text(a.source.toUpperCase(), 15, y);
-                        y += 4;
-                        doc.setFontSize(10);
-                        doc.setTextColor(0, 0, 0);
-                        const title = doc.splitTextToSize(a.title || '', pageWidth - 35);
-                        doc.text(title, 15, y);
-                        y += title.length * 4 + 2;
-                        if (a.published) {
-                            doc.setFontSize(7);
-                            doc.setTextColor(150, 150, 150);
-                            doc.text(a.published.substring(0, 25), 15, y);
-                            y += 6;
-                        }
-                        y += 4;
-                    });
-                }
-
-                // Other articles
-                if (otherArticles.length > 0) {
-                    y += 6;
-                    doc.setFontSize(11);
-                    doc.setTextColor(198, 40, 40);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('NEWS ARTICLE DETAILS', 15, y);
-                    y += 8;
-
-                    otherArticles.slice(0, 15).forEach(a => {
-                        if (y > 270) { doc.addPage(); y = 20; }
-                        doc.setFontSize(8);
-                        doc.setTextColor(198, 40, 40);
-                        doc.setFont('helvetica', 'bold');
-                        doc.text(a.source.toUpperCase(), 15, y);
-                        y += 4;
-                        doc.setFontSize(10);
-                        doc.setTextColor(0, 0, 0);
-                        doc.setFont('helvetica', 'normal');
-                        const title = doc.splitTextToSize(a.title || '', pageWidth - 35);
-                        doc.text(title, 15, y);
-                        y += title.length * 4 + 2;
-                        if (a.published) {
-                            doc.setFontSize(7);
-                            doc.setTextColor(150, 150, 150);
-                            doc.text(a.published.substring(0, 25), 15, y);
-                            y += 6;
-                        }
-                        y += 4;
-                    });
-                }
-
-                // Footer
-                doc.setFontSize(8);
-                doc.setTextColor(150, 150, 150);
-                doc.text(`American Red Cross | DR 153-26 | Generated ${new Date().toISOString().split('T')[0]}`, pageWidth/2, 285, {align: 'center'});
-
-                doc.save('SC-DR153-26-News-Summary.pdf');
-            } catch (err) {
-                alert('PDF generation failed: ' + err.message);
-            }
-
-            btn.disabled = false;
-            btn.textContent = 'Export PDF';
-        });
-
-        // Initial load
-        loadNews();
-    </script>
 </body>
 </html>
