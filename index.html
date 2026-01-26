@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SC Ice Storm News | American Red Cross</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -15,102 +16,106 @@
         .header {
             background-color: #d32f2f;
             color: white;
-            padding: 12px 24px;
-            text-align: center;
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
-        .header h1 { font-size: 20px; margin-bottom: 4px; }
-        .header .subtitle { font-size: 12px; opacity: 0.9; }
-        .header .updated { font-size: 11px; margin-top: 6px; opacity: 0.8; }
-        .refresh-btn {
+        .header-left h1 { font-size: 18px; margin-bottom: 2px; }
+        .header-left .subtitle { font-size: 11px; opacity: 0.9; }
+        .header-right { display: flex; gap: 8px; align-items: center; }
+        .header-right .updated { font-size: 10px; opacity: 0.8; margin-right: 8px; }
+        .btn {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             background: rgba(255,255,255,0.2);
             color: white;
-            padding: 6px 14px;
+            padding: 6px 12px;
             border-radius: 4px;
             border: 1px solid rgba(255,255,255,0.3);
-            font-size: 12px;
-            margin-top: 8px;
+            font-size: 11px;
             cursor: pointer;
             transition: background 0.2s;
         }
-        .refresh-btn:hover { background: rgba(255,255,255,0.3); }
-        .refresh-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .refresh-btn .spinner {
+        .btn:hover { background: rgba(255,255,255,0.3); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn.pdf-btn { background: rgba(0,0,0,0.2); }
+        .btn .spinner {
             display: none;
-            width: 14px;
-            height: 14px;
+            width: 12px;
+            height: 12px;
             border: 2px solid rgba(255,255,255,0.3);
             border-top-color: white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-        .refresh-btn.loading .spinner { display: block; }
-        .refresh-btn.loading .refresh-icon { display: none; }
+        .btn.loading .spinner { display: block; }
+        .btn.loading .icon { display: none; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .container { max-width: 1200px; margin: 0 auto; padding: 12px 16px; }
-        .stats-bar { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 10px 16px; }
+        .stats-bar { display: flex; gap: 8px; margin-bottom: 10px; }
         .stat-card {
             background: white;
             border-radius: 6px;
-            padding: 8px 16px;
+            padding: 8px 14px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             flex: 1;
-            min-width: 100px;
         }
-        .stat-card .number { font-size: 22px; font-weight: bold; color: #c62828; }
-        .stat-card .label { font-size: 10px; color: #666; text-transform: uppercase; }
-        .main-content { display: grid; grid-template-columns: 1fr 300px; gap: 24px; }
+        .stat-card .number { font-size: 20px; font-weight: bold; color: #c62828; }
+        .stat-card .label { font-size: 9px; color: #666; text-transform: uppercase; }
+        .main-content { display: grid; grid-template-columns: 1fr 260px; gap: 16px; }
         @media (max-width: 900px) { .main-content { grid-template-columns: 1fr; } }
         .articles-section {
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 24px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 16px;
+            max-height: 70vh;
+            overflow-y: auto;
         }
         .section-title {
-            font-size: 18px;
+            font-size: 14px;
             color: #c62828;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
             border-bottom: 2px solid #ffcdd2;
         }
-        .article-card { padding: 16px 0; border-bottom: 1px solid #e0e0e0; }
+        .article-card { padding: 10px 0; border-bottom: 1px solid #e0e0e0; }
         .article-card:last-child { border-bottom: none; }
         .article-source {
-            font-size: 11px;
+            font-size: 9px;
             color: #c62828;
             text-transform: uppercase;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
-        .article-title { font-size: 16px; line-height: 1.4; margin-bottom: 8px; }
+        .article-title { font-size: 13px; line-height: 1.3; margin-bottom: 4px; }
         .article-title a { color: #333; text-decoration: none; }
         .article-title a:hover { color: #c62828; text-decoration: underline; }
-        .summary { font-size: 14px; color: #666; margin-bottom: 8px; }
-        .article-meta { font-size: 12px; color: #999; }
-        .sidebar { display: flex; flex-direction: column; gap: 24px; }
+        .summary { font-size: 11px; color: #666; margin-bottom: 4px; }
+        .article-meta { font-size: 10px; color: #999; }
+        .sidebar { display: flex; flex-direction: column; gap: 12px; }
         .sidebar-card {
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 12px;
         }
-        .sidebar-card h3 { font-size: 14px; color: #c62828; text-transform: uppercase; margin-bottom: 16px; }
+        .sidebar-card h3 { font-size: 11px; color: #c62828; text-transform: uppercase; margin-bottom: 10px; }
         .source-item {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
+            padding: 5px 0;
             border-bottom: 1px solid #f0f0f0;
-            font-size: 13px;
+            font-size: 11px;
         }
         .source-item:last-child { border-bottom: none; }
         .source-count { font-weight: bold; color: #c62828; }
-        .search-terms { display: flex; flex-wrap: wrap; gap: 8px; }
-        .term-tag { background: #ffebee; color: #c62828; padding: 4px 10px; border-radius: 12px; font-size: 11px; }
-        .footer { text-align: center; padding: 24px; color: #999; font-size: 12px; }
+        .search-terms { display: flex; flex-wrap: wrap; gap: 4px; }
+        .term-tag { background: #ffebee; color: #c62828; padding: 2px 8px; border-radius: 10px; font-size: 9px; }
+        .footer { text-align: center; padding: 12px; color: #999; font-size: 10px; }
         .loading-overlay {
             display: none;
             position: fixed;
@@ -122,60 +127,66 @@
         }
         .loading-overlay.active { display: flex; }
         .loading-spinner {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border: 4px solid #ffcdd2;
             border-top-color: #c62828;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
-        .loading-text { color: #c62828; font-weight: 500; }
+        .loading-text { color: #c62828; font-weight: 500; font-size: 14px; }
         .live-badge {
             display: inline-block;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 10px;
-            margin-left: 8px;
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-size: 8px;
+            margin-left: 6px;
             background: #e8f5e9;
             color: #2e7d32;
-            animation: pulse 2s infinite;
         }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
     </style>
 </head>
 <body>
     <div class="loading-overlay" id="loadingOverlay">
         <div style="text-align: center;">
             <div class="loading-spinner"></div>
-            <div class="loading-text">Crawling news sources...</div>
+            <div class="loading-text" id="loadingText">Crawling news sources...</div>
         </div>
     </div>
 
     <div class="header">
-        <h1>South Carolina Ice Storm</h1>
-        <div class="subtitle">News Monitoring | American Red Cross</div>
-        <div class="updated" id="lastUpdated">Loading...</div>
-        <button class="refresh-btn" id="refreshBtn" onclick="refreshNews()">
-            <span class="refresh-icon">&#x21bb;</span>
-            <span class="spinner"></span>
-            <span>Refresh Now</span>
-        </button>
+        <div class="header-left">
+            <h1>South Carolina Ice Storm</h1>
+            <div class="subtitle">DR 153-26 | American Red Cross</div>
+        </div>
+        <div class="header-right">
+            <span class="updated" id="lastUpdated">Loading...</span>
+            <button class="btn" id="refreshBtn" onclick="refreshNews()">
+                <span class="icon">&#x21bb;</span>
+                <span class="spinner"></span>
+                Refresh
+            </button>
+            <button class="btn pdf-btn" id="pdfBtn" onclick="exportPDF()">
+                <span class="icon">&#x1F4C4;</span>
+                Export PDF
+            </button>
+        </div>
     </div>
 
     <div class="container">
         <div class="stats-bar">
             <div class="stat-card">
                 <div class="number" id="totalArticles">--</div>
-                <div class="label">Total Articles</div>
+                <div class="label">Articles</div>
             </div>
             <div class="stat-card">
                 <div class="number" id="totalSources">--</div>
-                <div class="label">News Sources</div>
+                <div class="label">Sources</div>
             </div>
             <div class="stat-card">
                 <div class="number" id="redCrossMentions">--</div>
-                <div class="label">Red Cross Mentions</div>
+                <div class="label">Red Cross</div>
             </div>
         </div>
 
@@ -192,14 +203,12 @@
                     <h3>Sources</h3>
                     <div id="sourcesContainer">Loading...</div>
                 </div>
-
                 <div class="sidebar-card">
                     <h3>Search Terms</h3>
                     <div class="search-terms">
                         <span class="term-tag">SC ice storm</span>
                         <span class="term-tag">SC winter storm</span>
                         <span class="term-tag">SC power outage</span>
-                        <span class="term-tag">SC freezing rain</span>
                     </div>
                 </div>
             </div>
@@ -207,11 +216,12 @@
     </div>
 
     <div class="footer">
-        American Red Cross | News Monitoring System | <span id="footerTime"></span>
+        American Red Cross | News Monitoring | <span id="footerTime"></span>
     </div>
 
     <script>
         let isLoading = false;
+        let currentArticles = [];
 
         async function refreshNews() {
             if (isLoading) return;
@@ -219,6 +229,7 @@
 
             const btn = document.getElementById('refreshBtn');
             const overlay = document.getElementById('loadingOverlay');
+            document.getElementById('loadingText').textContent = 'Crawling news sources...';
 
             btn.classList.add('loading');
             btn.disabled = true;
@@ -227,6 +238,7 @@
             try {
                 const response = await fetch('/api/crawl');
                 const data = await response.json();
+                currentArticles = data.articles || [];
                 renderNews(data);
             } catch (error) {
                 console.error('Error:', error);
@@ -242,8 +254,6 @@
 
         function renderNews(data) {
             const articles = data.articles || [];
-
-            // Stats
             document.getElementById('totalArticles').textContent = articles.length;
 
             const sources = {};
@@ -256,17 +266,14 @@
             document.getElementById('totalSources').textContent = Object.keys(sources).length;
             document.getElementById('redCrossMentions').textContent = rcCount;
 
-            // Timestamp
             const now = new Date();
             document.getElementById('lastUpdated').textContent =
-                'Last updated: ' + now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) +
-                ' at ' + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
             document.getElementById('footerTime').textContent = now.toISOString().slice(0, 16).replace('T', ' ');
 
-            // Articles
             let html = '';
             articles.forEach(a => {
-                const summary = a.summary ? '<p class="summary">' + esc(a.summary) + '</p>' : '';
+                const summary = a.summary ? '<p class="summary">' + esc(a.summary.slice(0,120)) + '</p>' : '';
                 html += '<div class="article-card">' +
                     '<div class="article-source">' + esc(a.source) + '</div>' +
                     '<h3 class="article-title"><a href="' + esc(a.url) + '" target="_blank">' + esc(a.title) + '</a></h3>' +
@@ -275,7 +282,6 @@
             });
             document.getElementById('articlesContainer').innerHTML = html || '<p style="color:#999;padding:20px;text-align:center;">No articles found.</p>';
 
-            // Sources sidebar
             let srcHtml = '';
             Object.entries(sources).sort((a,b) => b[1] - a[1]).forEach(([name, count]) => {
                 srcHtml += '<div class="source-item"><span>' + esc(name) + '</span><span class="source-count">' + count + '</span></div>';
@@ -288,6 +294,139 @@
             const d = document.createElement('div');
             d.textContent = t;
             return d.innerHTML;
+        }
+
+        function exportPDF() {
+            const overlay = document.getElementById('loadingOverlay');
+            document.getElementById('loadingText').textContent = 'Generating PDF...';
+            overlay.classList.add('active');
+
+            setTimeout(() => {
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF('p', 'mm', 'letter');
+                    const pageWidth = 215.9;
+                    const pageHeight = 279.4;
+                    const margin = 20;
+                    const contentWidth = pageWidth - (margin * 2);
+                    let y = margin;
+
+                    // Header bar
+                    doc.setFillColor(211, 47, 47);
+                    doc.rect(0, 0, pageWidth, 28, 'F');
+
+                    // Title
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(18);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('South Carolina Ice Storm', margin, 12);
+
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text('DR 153-26 | News Summary Report', margin, 19);
+
+                    // Report info
+                    doc.setFontSize(9);
+                    const now = new Date();
+                    const dateStr = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                    doc.text('Prepared By: Gary Pelletier | ' + dateStr, margin, 25);
+
+                    y = 38;
+
+                    // Stats section
+                    doc.setTextColor(51, 51, 51);
+                    doc.setFillColor(245, 245, 245);
+                    doc.rect(margin, y, contentWidth, 14, 'F');
+
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'bold');
+                    const articles = currentArticles || [];
+                    const sources = {};
+                    let rcCount = 0;
+                    articles.forEach(a => {
+                        sources[a.source] = (sources[a.source] || 0) + 1;
+                        if ((a.title + ' ' + (a.summary || '')).toLowerCase().includes('red cross')) rcCount++;
+                    });
+
+                    doc.setTextColor(198, 40, 40);
+                    doc.text(articles.length + ' Articles', margin + 5, y + 9);
+                    doc.text(Object.keys(sources).length + ' Sources', margin + 45, y + 9);
+                    doc.text(rcCount + ' Red Cross Mentions', margin + 85, y + 9);
+
+                    y += 22;
+
+                    // Section title
+                    doc.setTextColor(198, 40, 40);
+                    doc.setFontSize(12);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('NEWS SUMMARY', margin, y);
+                    y += 2;
+                    doc.setDrawColor(255, 205, 210);
+                    doc.setLineWidth(0.5);
+                    doc.line(margin, y, margin + contentWidth, y);
+                    y += 8;
+
+                    // Articles
+                    doc.setFont('helvetica', 'normal');
+                    articles.forEach((article, idx) => {
+                        if (y > pageHeight - 40) {
+                            doc.addPage();
+                            y = margin;
+                        }
+
+                        // Source tag
+                        doc.setFontSize(8);
+                        doc.setTextColor(198, 40, 40);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text(article.source.toUpperCase(), margin, y);
+                        y += 4;
+
+                        // Title
+                        doc.setFontSize(10);
+                        doc.setTextColor(51, 51, 51);
+                        doc.setFont('helvetica', 'bold');
+                        const titleLines = doc.splitTextToSize(article.title, contentWidth);
+                        doc.text(titleLines, margin, y);
+                        y += (titleLines.length * 4) + 1;
+
+                        // Summary
+                        if (article.summary) {
+                            doc.setFontSize(9);
+                            doc.setFont('helvetica', 'normal');
+                            doc.setTextColor(102, 102, 102);
+                            const summaryText = article.summary.slice(0, 150) + (article.summary.length > 150 ? '...' : '');
+                            const summaryLines = doc.splitTextToSize(summaryText, contentWidth);
+                            doc.text(summaryLines, margin, y);
+                            y += (summaryLines.length * 3.5) + 1;
+                        }
+
+                        // Date
+                        if (article.published) {
+                            doc.setFontSize(8);
+                            doc.setTextColor(153, 153, 153);
+                            doc.text(article.published.slice(0, 25), margin, y);
+                            y += 3;
+                        }
+
+                        y += 6;
+                    });
+
+                    // Footer on last page
+                    doc.setFontSize(8);
+                    doc.setTextColor(153, 153, 153);
+                    doc.text('American Red Cross | Disaster Response | Generated ' + now.toISOString().slice(0, 16).replace('T', ' '), margin, pageHeight - 10);
+
+                    // Save
+                    const filename = 'SC-DR153-26-News-Summary-' + now.toISOString().slice(0,10) + '.pdf';
+                    doc.save(filename);
+
+                } catch (error) {
+                    console.error('PDF Error:', error);
+                    alert('Error generating PDF. Please try again.');
+                } finally {
+                    overlay.classList.remove('active');
+                }
+            }, 100);
         }
 
         refreshNews();
