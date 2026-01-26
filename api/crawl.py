@@ -37,6 +37,16 @@ SEARCH_TERMS = [
     "SC ice storm",
     "South Carolina winter storm",
     "SC power outage ice",
+    "South Carolina freezing rain",
+    "Columbia SC ice storm",
+    "Greenville SC ice storm",
+    "Charleston SC winter weather",
+    "Upstate SC ice storm",
+    "Duke Energy South Carolina outage",
+    "SC emergency shelter ice storm",
+    "South Carolina school closings ice",
+    "Spartanburg SC winter storm",
+    "Midlands SC ice storm",
 ]
 
 USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
@@ -102,12 +112,30 @@ def normalize_title(title):
 
 def is_relevant(title, description=''):
     text = f"{title} {description}".lower()
-    sc_match = any(term in text for term in ['south carolina', ' sc ', 'carolina'])
-    weather_match = any(term in text for term in [
-        'ice', 'winter', 'storm', 'freeze', 'freezing', 'cold',
-        'power outage', 'shelter', 'emergency', 'weather'
+    # Location matching - South Carolina only
+    location_match = any(term in text for term in [
+        'south carolina', ' sc ', 'columbia', 'greenville', 'charleston',
+        'spartanburg', 'upstate', 'midlands', 'lowcountry', 'pee dee',
+        'anderson', 'florence', 'myrtle beach', 'rock hill', 'sumter',
+        'aiken', 'orangeburg', 'beaufort', 'hilton head', 'lexington',
+        'richland', 'horry', 'york', 'berkeley', 'dorchester', 'pickens',
+        'oconee', 'laurens', 'newberry', 'saluda', 'edgefield', 'abbeville',
+        'grand strand', 'santee', 'lake murray', 'clemson', 'conway'
     ])
-    return sc_match and weather_match
+    # Exclude if clearly about North Carolina (without SC mention)
+    nc_only = 'north carolina' in text and 'south carolina' not in text
+    if nc_only:
+        return False
+    # Weather/emergency matching - expanded keywords
+    weather_match = any(term in text for term in [
+        'ice', 'winter', 'storm', 'freeze', 'freezing', 'cold', 'sleet',
+        'power outage', 'outage', 'shelter', 'emergency', 'weather',
+        'duke energy', 'dominion energy', 'santee cooper', 'electric',
+        'warming center', 'school clos', 'delay', 'cancel', 'road',
+        'traffic', 'accident', 'crash', 'hazard', 'national guard',
+        'state of emergency', 'governor', 'mcmaster', 'red cross'
+    ])
+    return location_match and weather_match
 
 def crawl_news():
     """Run the news crawl."""
@@ -145,11 +173,32 @@ def crawl_news():
                     'summary': item.get('description', ''),
                 })
 
-    # Local SC RSS feeds
+    # Local SC RSS feeds - TV stations and newspapers (South Carolina only)
     local_feeds = [
+        # Columbia / Midlands
         ("WLTX Columbia", "https://www.wltx.com/feeds/syndication/rss/news/local"),
         ("WIS Columbia", "https://www.wistv.com/arc/outboundfeeds/rss/category/news/?outputType=xml"),
+        ("WACH Fox Columbia", "https://wach.com/feed/rss/news/local"),
+        ("The State", "https://www.thestate.com/news/local/?widgetName=rssfeed&widgetContentId=712015&getContent=true"),
+
+        # Greenville / Upstate
         ("WYFF Greenville", "https://www.wyff4.com/topstories-rss"),
+        ("Fox Carolina", "https://www.foxcarolina.com/search/?f=rss&t=article&c=news/local&l=50&s=start_time&sd=desc"),
+        ("WSPA Spartanburg", "https://www.wspa.com/feed/"),
+        ("Greenville News", "https://www.greenvilleonline.com/arcio/rss/"),
+
+        # Charleston / Lowcountry
+        ("WCSC Charleston", "https://www.live5news.com/search/?f=rss&t=article&c=news/local&l=50&s=start_time&sd=desc"),
+        ("WCBD Charleston", "https://www.counton2.com/feed/"),
+        ("Post and Courier", "https://www.postandcourier.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc"),
+
+        # Pee Dee / Grand Strand
+        ("WMBF Myrtle Beach", "https://www.wmbfnews.com/search/?f=rss&t=article&c=news&l=50&s=start_time&sd=desc"),
+        ("WBTW Florence", "https://www.wbtw.com/feed/"),
+        ("WPDE Myrtle Beach", "https://wpde.com/feed/rss/news/local"),
+
+        # Aiken / Augusta area (SC side)
+        ("WRDW Augusta", "https://www.wrdw.com/search/?f=rss&t=article&c=news/local&l=50"),
     ]
 
     for source_name, rss_url in local_feeds:
