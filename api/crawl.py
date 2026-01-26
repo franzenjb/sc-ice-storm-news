@@ -7,7 +7,7 @@ import json
 import hashlib
 import re
 import html
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib.parse import quote_plus
 from http.server import BaseHTTPRequestHandler
 
@@ -145,6 +145,43 @@ def is_relevant(title, description=''):
     ])
     return location_match and weather_match
 
+def parse_date(pub):
+    """Try to parse article date, return None if unparseable."""
+    if not pub:
+        return None
+    # Clean up the date string
+    pub_clean = pub.strip()
+    # Remove timezone abbreviations that strptime can't handle
+    pub_clean = re.sub(r'\s+(GMT|UTC|EST|EDT|PST|PDT|CST|CDT)$', '', pub_clean)
+    # Remove +0000 style timezone
+    pub_clean = re.sub(r'\s*[+-]\d{4}$', '', pub_clean)
+
+    for fmt in ['%a, %d %b %Y %H:%M:%S', '%Y-%m-%dT%H:%M:%S', '%Y-%m-%d %H:%M:%S', '%d %b %Y %H:%M:%S']:
+        try:
+            return datetime.strptime(pub_clean, fmt)
+        except:
+            continue
+    return None
+
+def is_recent_enough(article, now):
+    """Check if article is within time window: 36h for regular, 7d for Red Cross."""
+    text = (article.get('title', '') + ' ' + article.get('summary', '')).lower()
+    is_red_cross = 'red cross' in text
+
+    cutoff = now - timedelta(days=7) if is_red_cross else now - timedelta(hours=36)
+
+    pub_date = parse_date(article.get('published', ''))
+    if pub_date:
+        return pub_date >= cutoff
+
+    # Fallback: check for Jan 2026 in string (current month)
+    pub = article.get('published', '')
+    if is_red_cross:
+        return '2026' in pub and 'Jan' in pub
+    else:
+        # For 36h, only accept very recent dates
+        return '2026' in pub and 'Jan' in pub and any(d in pub for d in ['25', '26', '27'])
+
 def crawl_news():
     """Run the news crawl."""
     articles = []
@@ -235,12 +272,24 @@ def crawl_news():
                     'summary': item.get('description', ''),
                 })
 
+    # Filter by date: 36h for regular, 7d for Red Cross
+    now = datetime.now()
+    filtered_articles = [a for a in articles if is_recent_enough(a, now)]
+
+    # Sort newest to oldest
+    def get_sort_date(article):
+        pub_date = parse_date(article.get('published', ''))
+        return pub_date if pub_date else datetime.min
+
+    filtered_articles.sort(key=get_sort_date, reverse=True)
+
     return {
         'metadata': {
-            'crawled_at': datetime.now().isoformat(),
-            'total_articles': len(articles),
+            'crawled_at': now.isoformat(),
+            'total_articles': len(filtered_articles),
+            'total_crawled': len(articles),
         },
-        'articles': articles
+        'articles': filtered_articles
     }
 
 

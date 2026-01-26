@@ -204,38 +204,61 @@ def generate_pdf(output_path):
                 story.append(Paragraph(f"- {r}", bullet_style))
             story.append(Spacer(1, 8))
 
-    # Filter to last 48 hours only
+    # Time filters - 36 hours for regular, 7 days for Red Cross
     from datetime import timedelta
-    cutoff = now - timedelta(hours=48)
+    cutoff_36h = now - timedelta(hours=36)
+    cutoff_7d = now - timedelta(days=7)
 
-    def is_recent(article):
-        pub = article.get('published', '')
+    def parse_date(pub):
+        """Try to parse article date, return None if unparseable."""
         if not pub:
-            return True  # Include if no date
-        try:
-            # Try parsing common date formats
-            for fmt in ['%a, %d %b %Y %H:%M:%S', '%a, %d %b %Y %H:%M:%S %z', '%Y-%m-%dT%H:%M:%S']:
-                try:
-                    pub_date = datetime.strptime(pub[:25].strip(), fmt)
-                    return pub_date >= cutoff
-                except:
-                    continue
-            # Check if 2026 is in the date string (current year)
-            return '2026' in pub and ('Jan' in pub or '01' in pub[:10])
-        except:
-            return True
+            return None
+        for fmt in ['%a, %d %b %Y %H:%M:%S', '%a, %d %b %Y %H:%M:%S %z', '%Y-%m-%dT%H:%M:%S']:
+            try:
+                return datetime.strptime(pub[:25].strip(), fmt)
+            except:
+                continue
+        return None
 
-    recent_articles = [a for a in articles if is_recent(a)]
+    def is_within_36h(article):
+        pub_date = parse_date(article.get('published', ''))
+        if pub_date:
+            return pub_date >= cutoff_36h
+        # Fallback: check for Jan 2026 in string (recent dates only)
+        pub = article.get('published', '')
+        return '2026' in pub and 'Jan' in pub and any(d in pub for d in ['25', '26', '27'])
 
-    # Separate Red Cross articles (recent only)
+    def is_within_7d(article):
+        pub_date = parse_date(article.get('published', ''))
+        if pub_date:
+            return pub_date >= cutoff_7d
+        # Fallback: check for Jan 2026 in string
+        pub = article.get('published', '')
+        return '2026' in pub and 'Jan' in pub
+
+    # Separate and filter articles
     red_cross_articles = []
     other_articles = []
-    for a in recent_articles:
+    for a in articles:
         text = (a.get('title', '') + ' ' + a.get('summary', '')).lower()
-        if 'red cross' in text:
-            red_cross_articles.append(a)
+        is_rc = 'red cross' in text
+
+        if is_rc:
+            # Red Cross: 7 day max
+            if is_within_7d(a):
+                red_cross_articles.append(a)
         else:
-            other_articles.append(a)
+            # Regular: 36 hour max
+            if is_within_36h(a):
+                other_articles.append(a)
+
+    # Sort both lists newest to oldest
+    def get_sort_date(article):
+        pub_date = parse_date(article.get('published', ''))
+        return pub_date if pub_date else datetime.min
+
+    red_cross_articles.sort(key=get_sort_date, reverse=True)
+    other_articles.sort(key=get_sort_date, reverse=True)
 
     # Red Cross Section (if any)
     if red_cross_articles:

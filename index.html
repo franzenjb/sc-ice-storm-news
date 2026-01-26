@@ -3,521 +3,460 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SC Ice Storm News | American Red Cross</title>
+    <title>SC Ice Storm News | DR 153-26</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; line-height: 1.5; }
-        .header { background: #d32f2f; color: white; padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-        .header-left h1 { font-size: 18px; margin-bottom: 2px; }
-        .header-left .subtitle { font-size: 11px; opacity: 0.9; }
-        .header-right { display: flex; gap: 8px; align-items: center; }
-        .header-right .updated { font-size: 10px; opacity: 0.8; margin-right: 8px; }
-        .btn { display: inline-flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); font-size: 11px; cursor: pointer; transition: background 0.2s; }
-        .btn:hover { background: rgba(255,255,255,0.3); }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .btn.pdf-btn { background: rgba(0,0,0,0.2); }
-        .btn .spinner { display: none; width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; }
-        .btn.loading .spinner { display: block; }
-        .btn.loading .icon { display: none; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.5;
+        }
+        .header {
+            background: #d32f2f;
+            color: white;
+            padding: 20px 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .header h1 { font-size: 24px; margin-bottom: 4px; }
+        .header .subtitle { font-size: 13px; opacity: 0.9; }
+        .header .meta { font-size: 11px; margin-top: 8px; opacity: 0.8; }
+
+        .controls {
+            background: white;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .controls label { font-size: 13px; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .controls input[type="checkbox"] { width: 16px; height: 16px; accent-color: #c62828; }
+        .controls input[type="text"] {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            width: 200px;
+        }
+        .controls select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .controls .filter-count {
+            font-size: 12px;
+            color: #666;
+            margin-left: auto;
+        }
+        .btn {
+            background: #c62828;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn:hover { background: #b71c1c; }
+        .btn:disabled { background: #999; cursor: not-allowed; }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+
+        .stats-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 6px;
+            padding: 12px 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 120px;
+        }
+        .stat-card .number { font-size: 28px; font-weight: bold; color: #c62828; }
+        .stat-card .label { font-size: 11px; color: #666; text-transform: uppercase; }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+        }
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #c62828;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .container { max-width: 1200px; margin: 0 auto; padding: 10px 16px; }
-        .stats-bar { display: flex; gap: 8px; margin-bottom: 10px; }
-        .stat-card { background: white; border-radius: 6px; padding: 8px 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); flex: 1; }
-        .stat-card .number { font-size: 20px; font-weight: bold; color: #c62828; }
-        .stat-card .label { font-size: 9px; color: #666; text-transform: uppercase; }
-        .main-content { display: grid; grid-template-columns: 1fr 260px; gap: 16px; }
-        @media (max-width: 900px) { .main-content { grid-template-columns: 1fr; } }
-        .articles-section { background: white; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 16px; max-height: 70vh; overflow-y: auto; }
-        .section-title { font-size: 14px; color: #c62828; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #ffcdd2; }
-        .article-card { padding: 10px 0; border-bottom: 1px solid #e0e0e0; }
-        .article-card:last-child { border-bottom: none; }
-        .article-card.red-cross { background: #ffebee; border-left: 4px solid #c62828; padding-left: 10px; margin-left: -10px; }
-        .article-card.red-cross .article-source::after { content: ' ★ RED CROSS'; color: #c62828; font-weight: bold; }
-        .article-source { font-size: 9px; color: #c62828; text-transform: uppercase; font-weight: 600; margin-bottom: 2px; }
-        .article-title { font-size: 13px; line-height: 1.3; margin-bottom: 4px; }
-        .article-title a { color: #333; text-decoration: none; }
-        .article-title a:hover { color: #c62828; text-decoration: underline; }
-        .summary { font-size: 11px; color: #666; margin-bottom: 4px; }
-        .article-meta { font-size: 10px; color: #999; }
-        .sidebar { display: flex; flex-direction: column; gap: 12px; }
-        .sidebar-card { background: white; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 12px; }
-        .sidebar-card h3 { font-size: 11px; color: #c62828; text-transform: uppercase; margin-bottom: 10px; }
-        .source-item { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #f0f0f0; font-size: 11px; }
-        .source-item:last-child { border-bottom: none; }
-        .source-count { font-weight: bold; color: #c62828; }
-        .footer { text-align: center; padding: 12px; color: #999; font-size: 10px; }
-        .loading-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.95); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; }
-        .loading-overlay.active { display: flex; }
-        .loading-spinner { width: 40px; height: 40px; border: 4px solid #ffcdd2; border-top-color: #c62828; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px; }
-        .loading-text { color: #c62828; font-weight: 500; font-size: 14px; }
-        .loading-sub { color: #666; font-size: 11px; margin-top: 4px; }
-        .live-badge { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: 8px; margin-left: 6px; background: #e8f5e9; color: #2e7d32; }
-        .filter-bar { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; flex-wrap: wrap; }
-        .filter-btn { padding: 5px 12px; border-radius: 15px; border: 1px solid #e0e0e0; background: white; font-size: 10px; cursor: pointer; transition: all 0.2s; }
-        .filter-btn:hover { background: #f5f5f5; }
-        .filter-btn.active { background: #c62828; color: white; border-color: #c62828; }
-        .filter-btn.rc-filter { border-color: #c62828; color: #c62828; }
-        .filter-btn.rc-filter.active { background: #c62828; color: white; }
-        .filter-input { padding: 5px 10px; border-radius: 15px; border: 1px solid #e0e0e0; font-size: 10px; width: 150px; }
-        .filter-select { padding: 5px 10px; border-radius: 15px; border: 1px solid #e0e0e0; font-size: 10px; background: white; }
-        .filter-count { font-size: 10px; color: #666; margin-left: auto; }
+
+        .article {
+            background: white;
+            border-radius: 6px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid transparent;
+        }
+        .article.red-cross {
+            border-left-color: #c62828;
+            background: #fff5f5;
+        }
+        .article .source {
+            font-size: 11px;
+            font-weight: 600;
+            color: #c62828;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .article .rc-badge {
+            background: #c62828;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 8px;
+        }
+        .article h3 {
+            font-size: 15px;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        .article h3 a { color: #333; text-decoration: none; }
+        .article h3 a:hover { color: #c62828; }
+        .article .summary {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+        .article .date {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .section-header {
+            background: #c62828;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 11px;
+            color: #999;
+        }
+
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
-    <div class="loading-overlay" id="loadingOverlay">
-        <div style="text-align: center;">
-            <div class="loading-spinner"></div>
-            <div class="loading-text" id="loadingText">Crawling news sources...</div>
-            <div class="loading-sub" id="loadingSub"></div>
-        </div>
+    <div class="header">
+        <h1>South Carolina Ice Storm</h1>
+        <div class="subtitle">DR 153-26 | Disaster News Monitoring</div>
+        <div class="meta">Prepared By: Gary Pelletier | <span id="currentDate"></span></div>
     </div>
 
-    <div class="header">
-        <div class="header-left">
-            <h1>South Carolina Ice Storm</h1>
-            <div class="subtitle">DR 153-26 | American Red Cross</div>
-        </div>
-        <div class="header-right">
-            <span class="updated" id="lastUpdated">Loading...</span>
-            <button class="btn" id="refreshBtn" onclick="refreshNews()">
-                <span class="icon">&#x21bb;</span>
-                <span class="spinner"></span>
-                Refresh
-            </button>
-            <button class="btn pdf-btn" id="pdfBtn" onclick="exportPDF()">
-                <span class="icon">&#x1F4C4;</span>
-                Export PDF
-            </button>
-        </div>
+    <div class="controls">
+        <label>
+            <input type="checkbox" id="rcOnly">
+            Red Cross Only
+        </label>
+        <input type="text" id="searchInput" placeholder="Search articles...">
+        <select id="sourceFilter">
+            <option value="">All Sources</option>
+        </select>
+        <button class="btn" id="exportPdf">Export PDF</button>
+        <button class="btn" id="refreshBtn">Refresh</button>
+        <span class="filter-count" id="filterCount"></span>
     </div>
 
     <div class="container">
         <div class="stats-bar">
             <div class="stat-card">
-                <div class="number" id="totalArticles">--</div>
+                <div class="number" id="totalCount">-</div>
                 <div class="label">Articles</div>
             </div>
             <div class="stat-card">
-                <div class="number" id="totalSources">--</div>
+                <div class="number" id="sourceCount">-</div>
                 <div class="label">Sources</div>
             </div>
             <div class="stat-card">
-                <div class="number" id="redCrossMentions">--</div>
+                <div class="number" id="rcCount">-</div>
                 <div class="label">Red Cross</div>
             </div>
         </div>
 
-        <div class="main-content">
-            <div class="articles-section">
-                <h2 class="section-title">Latest Coverage <span class="live-badge">LIVE</span></h2>
-                <div class="filter-bar">
-                    <button class="filter-btn rc-filter" id="rcFilter" onclick="toggleRCFilter()">&#9733; Red Cross Only</button>
-                    <input type="text" class="filter-input" id="searchFilter" placeholder="Search articles..." oninput="applyFilters()">
-                    <select class="filter-select" id="sourceFilter" onchange="applyFilters()">
-                        <option value="">All Sources</option>
-                    </select>
-                    <span class="filter-count" id="filterCount"></span>
-                </div>
-                <div id="articlesContainer"><p style="color: #999; padding: 20px; text-align: center;">Loading articles...</p></div>
-            </div>
-            <div class="sidebar">
-                <div class="sidebar-card">
-                    <h3>Sources</h3>
-                    <div id="sourcesContainer">Loading...</div>
-                </div>
-                <div class="sidebar-card">
-                    <h3>Search Terms</h3>
-                    <div style="display:flex;flex-wrap:wrap;gap:4px;">
-                        <span style="background:#ffebee;color:#c62828;padding:2px 8px;border-radius:10px;font-size:9px;">SC ice storm</span>
-                        <span style="background:#ffebee;color:#c62828;padding:2px 8px;border-radius:10px;font-size:9px;">SC winter storm</span>
-                        <span style="background:#ffebee;color:#c62828;padding:2px 8px;border-radius:10px;font-size:9px;">SC power outage</span>
-                    </div>
-                </div>
-            </div>
+        <div id="content">
+            <div class="loading">Loading news articles</div>
         </div>
     </div>
 
-    <div class="footer">American Red Cross | News Monitoring | <span id="footerTime"></span></div>
+    <div class="footer">
+        American Red Cross | DR 153-26 | News updated every refresh
+    </div>
 
     <script>
-        let isLoading = false;
-        let currentArticles = [];
-        let rcFilterActive = false;
+        let allArticles = [];
 
-        function toggleRCFilter() {
-            rcFilterActive = !rcFilterActive;
-            document.getElementById('rcFilter').classList.toggle('active', rcFilterActive);
-            applyFilters();
+        // Set current date
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+
+        async function loadNews() {
+            document.getElementById('content').innerHTML = '<div class="loading">Loading news articles</div>';
+
+            try {
+                const resp = await fetch('/api/crawl');
+                const data = await resp.json();
+                allArticles = data.articles || [];
+
+                // Update stats
+                document.getElementById('totalCount').textContent = allArticles.length;
+                const sources = [...new Set(allArticles.map(a => a.source))];
+                document.getElementById('sourceCount').textContent = sources.length;
+
+                const rcArticles = allArticles.filter(a =>
+                    (a.title + ' ' + a.summary).toLowerCase().includes('red cross')
+                );
+                document.getElementById('rcCount').textContent = rcArticles.length;
+
+                // Populate source filter
+                const sourceSelect = document.getElementById('sourceFilter');
+                sourceSelect.innerHTML = '<option value="">All Sources</option>';
+                sources.sort().forEach(src => {
+                    sourceSelect.innerHTML += `<option value="${src}">${src}</option>`;
+                });
+
+                renderArticles();
+            } catch (err) {
+                document.getElementById('content').innerHTML =
+                    '<div style="color:#c62828;padding:40px;text-align:center;">Error loading news. Please refresh.</div>';
+            }
         }
 
-        function applyFilters() {
-            const searchTerm = document.getElementById('searchFilter').value.toLowerCase();
+        function isRedCross(article) {
+            return (article.title + ' ' + (article.summary || '')).toLowerCase().includes('red cross');
+        }
+
+        function renderArticles() {
+            const rcOnly = document.getElementById('rcOnly').checked;
+            const search = document.getElementById('searchInput').value.toLowerCase();
             const sourceFilter = document.getElementById('sourceFilter').value;
 
-            let filtered = currentArticles.filter(a => {
-                const text = (a.title + ' ' + (a.summary || '')).toLowerCase();
-                const isRC = text.includes('red cross');
-
-                // Red Cross filter
-                if (rcFilterActive && !isRC) return false;
-
-                // Search filter
-                if (searchTerm && !text.includes(searchTerm)) return false;
-
-                // Source filter
+            let filtered = allArticles.filter(a => {
+                if (rcOnly && !isRedCross(a)) return false;
                 if (sourceFilter && a.source !== sourceFilter) return false;
-
+                if (search) {
+                    const text = (a.title + ' ' + a.summary + ' ' + a.source).toLowerCase();
+                    if (!text.includes(search)) return false;
+                }
                 return true;
             });
 
-            renderArticles(filtered);
+            // Update filter count
             document.getElementById('filterCount').textContent =
-                filtered.length === currentArticles.length ? '' : `Showing ${filtered.length} of ${currentArticles.length}`;
-        }
+                `Showing ${filtered.length} of ${allArticles.length} articles`;
 
-        function renderArticles(articles) {
-            // Sort: Red Cross articles first
-            const redCrossArticles = articles.filter(a => (a.title + ' ' + (a.summary || '')).toLowerCase().includes('red cross'));
-            const otherArticles = articles.filter(a => !(a.title + ' ' + (a.summary || '')).toLowerCase().includes('red cross'));
-            const sortedArticles = [...redCrossArticles, ...otherArticles];
+            // Separate Red Cross articles
+            const rcArticles = filtered.filter(a => isRedCross(a));
+            const otherArticles = filtered.filter(a => !isRedCross(a));
 
             let html = '';
-            sortedArticles.forEach(a => {
-                const isRedCross = (a.title + ' ' + (a.summary || '')).toLowerCase().includes('red cross');
-                const cardClass = isRedCross ? 'article-card red-cross' : 'article-card';
-                const summary = a.summary ? '<p class="summary">' + esc(a.summary.slice(0,120)) + '</p>' : '';
-                html += '<div class="' + cardClass + '"><div class="article-source">' + esc(a.source) + '</div><h3 class="article-title"><a href="' + esc(a.url) + '" target="_blank">' + esc(a.title) + '</a></h3>' + summary + '<div class="article-meta">' + esc((a.published || '').slice(0, 25)) + '</div></div>';
-            });
-            document.getElementById('articlesContainer').innerHTML = html || '<p style="color:#999;padding:20px;text-align:center;">No articles match filters.</p>';
-        }
 
-        async function refreshNews() {
-            if (isLoading) return;
-            isLoading = true;
-            const btn = document.getElementById('refreshBtn');
-            const overlay = document.getElementById('loadingOverlay');
-            document.getElementById('loadingText').textContent = 'Crawling news sources...';
-            document.getElementById('loadingSub').textContent = '';
-            btn.classList.add('loading');
-            btn.disabled = true;
-            overlay.classList.add('active');
-
-            try {
-                const response = await fetch('/api/crawl');
-                const data = await response.json();
-                currentArticles = data.articles || [];
-                renderNews(data);
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('articlesContainer').innerHTML = '<p style="color: #c62828; padding: 20px; text-align: center;">Error loading news.</p>';
-            } finally {
-                isLoading = false;
-                btn.classList.remove('loading');
-                btn.disabled = false;
-                overlay.classList.remove('active');
-            }
-        }
-
-        function renderNews(data) {
-            const articles = data.articles || [];
-            document.getElementById('totalArticles').textContent = articles.length;
-            const sources = {};
-            let rcCount = 0;
-            articles.forEach(a => {
-                sources[a.source] = (sources[a.source] || 0) + 1;
-                if ((a.title + ' ' + (a.summary || '')).toLowerCase().includes('red cross')) rcCount++;
-            });
-            document.getElementById('totalSources').textContent = Object.keys(sources).length;
-            document.getElementById('redCrossMentions').textContent = rcCount;
-            const now = new Date();
-            document.getElementById('lastUpdated').textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-            document.getElementById('footerTime').textContent = now.toISOString().slice(0, 16).replace('T', ' ');
-
-            // Populate source dropdown
-            const sourceSelect = document.getElementById('sourceFilter');
-            sourceSelect.innerHTML = '<option value="">All Sources</option>';
-            Object.keys(sources).sort().forEach(src => {
-                sourceSelect.innerHTML += '<option value="' + esc(src) + '">' + esc(src) + ' (' + sources[src] + ')</option>';
-            });
-
-            // Render with current filters
-            applyFilters();
-
-            let srcHtml = '';
-            Object.entries(sources).sort((a,b) => b[1] - a[1]).forEach(([name, count]) => {
-                srcHtml += '<div class="source-item"><span>' + esc(name) + '</span><span class="source-count">' + count + '</span></div>';
-            });
-            document.getElementById('sourcesContainer').innerHTML = srcHtml || 'No sources';
-        }
-
-        function esc(t) { if (!t) return ''; const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-
-        async function exportPDF() {
-            const overlay = document.getElementById('loadingOverlay');
-            document.getElementById('loadingText').textContent = 'Generating AI Summary...';
-            document.getElementById('loadingSub').textContent = 'Analyzing articles with Claude AI';
-            overlay.classList.add('active');
-
-            let aiSummary = null;
-            try {
-                const resp = await fetch('/api/summary', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({articles: currentArticles})
+            // Red Cross section first
+            if (rcArticles.length > 0) {
+                html += '<div class="section-header">RED CROSS MENTIONS</div>';
+                rcArticles.forEach(a => {
+                    html += renderArticle(a, true);
                 });
-                aiSummary = await resp.json();
-            } catch (e) {
-                console.log('AI summary failed, using fallback');
             }
 
-            document.getElementById('loadingText').textContent = 'Building PDF...';
-            document.getElementById('loadingSub').textContent = '';
+            // Other articles
+            if (otherArticles.length > 0) {
+                if (rcArticles.length > 0) {
+                    html += '<div class="section-header" style="background:#666;margin-top:20px;">OTHER NEWS</div>';
+                }
+                otherArticles.forEach(a => {
+                    html += renderArticle(a, false);
+                });
+            }
 
-            setTimeout(() => {
-                try {
-                    const { jsPDF } = window.jspdf;
-                    const doc = new jsPDF('p', 'mm', 'letter');
-                    const W = 215.9, H = 279.4, M = 15;
-                    const CW = W - M*2;
-                    let y = M;
-                    const now = new Date();
-                    const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+            if (filtered.length === 0) {
+                html = '<div style="text-align:center;padding:40px;color:#666;">No articles match your filters.</div>';
+            }
 
-                    // Red header - taller for better readability
-                    doc.setFillColor(211, 47, 47);
-                    doc.rect(0, 0, W, 38, 'F');
+            document.getElementById('content').innerHTML = html;
+        }
+
+        function renderArticle(a, isRC) {
+            const title = a.title || 'No title';
+            const titleHighlighted = isRC ?
+                title.replace(/red cross/gi, '<span style="color:#c62828;font-weight:bold;">Red Cross</span>') :
+                title;
+
+            let summary = a.summary || '';
+            if (isRC && summary) {
+                summary = summary.replace(/red cross/gi, '<span style="color:#c62828;font-weight:bold;">Red Cross</span>');
+            }
+
+            return `
+                <div class="article ${isRC ? 'red-cross' : ''}">
+                    <div class="source">
+                        ${a.source}
+                        ${isRC ? '<span class="rc-badge">RED CROSS</span>' : ''}
+                    </div>
+                    <h3><a href="${a.url}" target="_blank">${titleHighlighted}</a></h3>
+                    ${summary ? `<div class="summary">${summary.substring(0, 200)}</div>` : ''}
+                    <div class="date">${a.published || ''}</div>
+                </div>
+            `;
+        }
+
+        // Event listeners
+        document.getElementById('rcOnly').addEventListener('change', renderArticles);
+        document.getElementById('searchInput').addEventListener('input', renderArticles);
+        document.getElementById('sourceFilter').addEventListener('change', renderArticles);
+        document.getElementById('refreshBtn').addEventListener('click', loadNews);
+
+        // PDF Export
+        document.getElementById('exportPdf').addEventListener('click', async function() {
+            const btn = this;
+            btn.disabled = true;
+            btn.textContent = 'Generating...';
+
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                const pageWidth = doc.internal.pageSize.getWidth();
+                let y = 15;
+
+                // Header
+                doc.setFillColor(211, 47, 47);
+                doc.rect(0, 0, pageWidth, 35, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(20);
+                doc.setFont('helvetica', 'bold');
+                doc.text('South Carolina Ice Storm', 15, 15);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                doc.text('DR 153-26 | Disaster Operations Briefing', 15, 23);
+                doc.text('Prepared By: Gary Pelletier | ' + new Date().toLocaleDateString(), 15, 30);
+
+                y = 45;
+                doc.setTextColor(0, 0, 0);
+
+                // Stats
+                doc.setFontSize(10);
+                doc.setTextColor(198, 40, 40);
+                const rcCount = allArticles.filter(a => isRedCross(a)).length;
+                doc.text(`${allArticles.length} Articles | ${rcCount} Red Cross Mentions | Generated ${new Date().toLocaleTimeString()}`, pageWidth/2, y, {align: 'center'});
+                y += 12;
+
+                // Red Cross articles first
+                const rcArticles = allArticles.filter(a => isRedCross(a));
+                const otherArticles = allArticles.filter(a => !isRedCross(a));
+
+                if (rcArticles.length > 0) {
+                    doc.setFillColor(198, 40, 40);
+                    doc.rect(15, y, pageWidth - 30, 8, 'F');
                     doc.setTextColor(255, 255, 255);
-                    doc.setFontSize(24);
+                    doc.setFontSize(11);
                     doc.setFont('helvetica', 'bold');
-                    doc.text('South Carolina Ice Storm', M, 16);
-                    doc.setFontSize(13);
-                    doc.setFont('helvetica', 'normal');
-                    doc.text('DR 153-26 | Disaster Operations Briefing', M, 25);
-                    doc.setFontSize(10);
-                    doc.text('Prepared By: Gary Pelletier | ' + dateStr, M, 33);
-                    y = 46;
+                    doc.text('RED CROSS MENTIONS', 20, y + 6);
+                    y += 14;
 
-                    // Stats bar
-                    const articles = currentArticles || [];
-                    const sources = {};
-                    articles.forEach(a => sources[a.source] = (sources[a.source] || 0) + 1);
-                    doc.setFillColor(245, 245, 245);
-                    doc.rect(M, y, CW, 12, 'F');
-                    doc.setTextColor(198, 40, 40);
-                    doc.setFontSize(10);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text(articles.length + ' News Articles', M + 5, y + 8);
-                    doc.text(Object.keys(sources).length + ' Sources Monitored', M + 50, y + 8);
-                    doc.text('Report Generated: ' + now.toLocaleTimeString(), M + 110, y + 8);
-                    y += 20;
-
-                    // Executive Summary
-                    doc.setTextColor(198, 40, 40);
-                    doc.setFontSize(14);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('EXECUTIVE SUMMARY', M, y);
-                    y += 2;
-                    doc.setDrawColor(255, 205, 210);
-                    doc.setLineWidth(0.5);
-                    doc.line(M, y, M + CW, y);
-                    y += 6;
-
-                    doc.setTextColor(51, 51, 51);
-                    doc.setFontSize(10);
-                    doc.setFont('helvetica', 'normal');
-                    const execSummary = aiSummary?.executive_summary || 'This report compiles ' + articles.length + ' news articles from South Carolina media sources covering the current ice storm. Review the news articles below for specific details on impacts, closures, and emergency response activities.';
-                    const execLines = doc.splitTextToSize(execSummary, CW);
-                    doc.text(execLines, M, y);
-                    y += execLines.length * 4.5 + 8;
-
-                    // Key Impacts Section
-                    if (y > H - 60) { doc.addPage(); y = M; }
-                    doc.setTextColor(198, 40, 40);
-                    doc.setFontSize(14);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('KEY IMPACTS BY CATEGORY', M, y);
-                    y += 2;
-                    doc.line(M, y, M + CW, y);
-                    y += 8;
-
-                    const impacts = aiSummary?.key_impacts || {
-                        power_outages: ['See news articles below for power outage details'],
-                        road_conditions: ['See news articles below for road conditions'],
-                        schools_closures: ['See news articles below for school closures'],
-                        shelters_warming: ['See news articles below for shelter information'],
-                        emergency_response: ['See news articles below for emergency response']
-                    };
-
-                    const categories = [
-                        {title: 'POWER & UTILITIES', key: 'power_outages', icon: '⚡'},
-                        {title: 'ROAD CONDITIONS', key: 'road_conditions', icon: '🚗'},
-                        {title: 'SCHOOLS & CLOSURES', key: 'schools_closures', icon: '🏫'},
-                        {title: 'SHELTERS & WARMING CENTERS', key: 'shelters_warming', icon: '🏠'},
-                        {title: 'EMERGENCY RESPONSE', key: 'emergency_response', icon: '🚨'}
-                    ];
-
-                    categories.forEach(cat => {
-                        if (y > H - 40) { doc.addPage(); y = M; }
-                        doc.setFillColor(255, 235, 238);
-                        doc.rect(M, y - 3, CW, 7, 'F');
-                        doc.setTextColor(198, 40, 40);
-                        doc.setFontSize(9);
-                        doc.setFont('helvetica', 'bold');
-                        doc.text(cat.title, M + 2, y + 2);
-                        y += 8;
-
-                        doc.setTextColor(51, 51, 51);
-                        doc.setFontSize(9);
-                        doc.setFont('helvetica', 'normal');
-                        const items = impacts[cat.key] || [];
-                        items.slice(0, 4).forEach(item => {
-                            if (y > H - 20) { doc.addPage(); y = M; }
-                            const lines = doc.splitTextToSize('• ' + item, CW - 5);
-                            doc.text(lines, M + 3, y);
-                            y += lines.length * 3.5 + 1;
-                        });
-                        y += 4;
-                    });
-
-                    // Critical Numbers
-                    if (y > H - 50) { doc.addPage(); y = M; }
-                    y += 4;
-                    doc.setTextColor(198, 40, 40);
-                    doc.setFontSize(14);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('CRITICAL NUMBERS', M, y);
-                    y += 2;
-                    doc.line(M, y, M + CW, y);
-                    y += 8;
-
-                    const nums = aiSummary?.critical_numbers || {
-                        estimated_outages: 'See coverage',
-                        crashes_reported: 'See coverage',
-                        shelters_open: 'See coverage',
-                        schools_affected: 'See coverage'
-                    };
-
-                    doc.setFillColor(245, 245, 245);
-                    doc.rect(M, y - 2, CW, 20, 'F');
-                    doc.setFontSize(9);
-                    doc.setFont('helvetica', 'normal');
-                    doc.setTextColor(51, 51, 51);
-                    doc.text('Power Outages: ' + (nums.estimated_outages || 'N/A'), M + 5, y + 5);
-                    doc.text('Crashes: ' + (nums.crashes_reported || 'N/A'), M + 5, y + 12);
-                    doc.text('Shelters: ' + (nums.shelters_open || 'N/A'), M + 90, y + 5);
-                    doc.text('Schools: ' + (nums.schools_affected || 'N/A'), M + 90, y + 12);
-                    y += 28;
-
-                    // Action Items
-                    if (y > H - 50) { doc.addPage(); y = M; }
-                    doc.setTextColor(198, 40, 40);
-                    doc.setFontSize(14);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('RECOMMENDED ACTIONS', M, y);
-                    y += 2;
-                    doc.line(M, y, M + CW, y);
-                    y += 8;
-
-                    const actions = aiSummary?.action_items || [
-                        'Review news articles below for current situation details',
-                        'Check utility company websites for live outage maps',
-                        'Monitor local news sources for road condition updates',
-                        'Contact local emergency management for shelter locations'
-                    ];
-
-                    doc.setTextColor(51, 51, 51);
-                    doc.setFontSize(9);
-                    doc.setFont('helvetica', 'normal');
-                    actions.slice(0, 6).forEach((action, i) => {
-                        if (y > H - 20) { doc.addPage(); y = M; }
-                        doc.setFillColor(i % 2 === 0 ? 255 : 250, i % 2 === 0 ? 255 : 250, i % 2 === 0 ? 255 : 250);
-                        const lines = doc.splitTextToSize((i+1) + '. ' + action, CW - 5);
-                        doc.text(lines, M + 2, y);
-                        y += lines.length * 3.5 + 3;
-                    });
-                    y += 6;
-
-                    // Resources
-                    if (y > H - 40) { doc.addPage(); y = M; }
-                    doc.setTextColor(198, 40, 40);
-                    doc.setFontSize(14);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('RESOURCES & CONTACTS', M, y);
-                    y += 2;
-                    doc.line(M, y, M + CW, y);
-                    y += 8;
-
-                    const resources = aiSummary?.resources_mentioned || [
-                        'See news articles for specific contact information'
-                    ];
-
-                    doc.setTextColor(51, 51, 51);
-                    doc.setFontSize(9);
-                    resources.slice(0, 5).forEach(r => {
-                        doc.text('• ' + r, M + 2, y);
-                        y += 5;
-                    });
-
-                    // News Headlines (new page)
-                    doc.addPage();
-                    y = M;
-                    doc.setFillColor(211, 47, 47);
-                    doc.rect(0, 0, W, 18, 'F');
-                    doc.setTextColor(255, 255, 255);
-                    doc.setFontSize(14);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('NEWS ARTICLE DETAILS', M, 12);
-                    y = 26;
-
-                    articles.slice(0, 20).forEach((article, idx) => {
-                        if (y > H - 30) { doc.addPage(); y = M; }
+                    doc.setTextColor(0, 0, 0);
+                    rcArticles.slice(0, 10).forEach(a => {
+                        if (y > 270) { doc.addPage(); y = 20; }
                         doc.setFontSize(8);
                         doc.setTextColor(198, 40, 40);
                         doc.setFont('helvetica', 'bold');
-                        doc.text(article.source.toUpperCase(), M, y);
+                        doc.text(a.source.toUpperCase(), 15, y);
                         y += 4;
                         doc.setFontSize(10);
-                        doc.setTextColor(51, 51, 51);
-                        const titleLines = doc.splitTextToSize(article.title, CW);
-                        doc.text(titleLines, M, y);
-                        y += titleLines.length * 4 + 1;
-                        if (article.summary) {
-                            doc.setFontSize(9);
-                            doc.setFont('helvetica', 'normal');
-                            doc.setTextColor(102, 102, 102);
-                            const sumLines = doc.splitTextToSize(article.summary.slice(0, 180), CW);
-                            doc.text(sumLines, M, y);
-                            y += sumLines.length * 3.5;
+                        doc.setTextColor(0, 0, 0);
+                        const title = doc.splitTextToSize(a.title || '', pageWidth - 35);
+                        doc.text(title, 15, y);
+                        y += title.length * 4 + 2;
+                        if (a.published) {
+                            doc.setFontSize(7);
+                            doc.setTextColor(150, 150, 150);
+                            doc.text(a.published.substring(0, 25), 15, y);
+                            y += 6;
                         }
-                        doc.setFontSize(8);
-                        doc.setTextColor(153, 153, 153);
-                        doc.text(article.published?.slice(0, 25) || '', M, y);
-                        y += 8;
+                        y += 4;
                     });
-
-                    // Footer on every page
-                    const totalPages = doc.internal.getNumberOfPages();
-                    for (let i = 1; i <= totalPages; i++) {
-                        doc.setPage(i);
-                        doc.setFontSize(8);
-                        doc.setTextColor(153, 153, 153);
-                        doc.text('American Red Cross | DR 153-26 | Page ' + i + ' of ' + totalPages, M, H - 8);
-                        doc.text('Generated: ' + now.toISOString().slice(0, 16).replace('T', ' '), W - M - 45, H - 8);
-                    }
-
-                    doc.save('SC-DR153-26-Briefing-' + now.toISOString().slice(0,10) + '.pdf');
-                } catch (error) {
-                    console.error('PDF Error:', error);
-                    alert('Error generating PDF');
-                } finally {
-                    overlay.classList.remove('active');
                 }
-            }, 100);
-        }
 
-        refreshNews();
-        setInterval(refreshNews, 30 * 60 * 1000);
+                // Other articles
+                if (otherArticles.length > 0) {
+                    y += 6;
+                    doc.setFontSize(11);
+                    doc.setTextColor(198, 40, 40);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('NEWS ARTICLE DETAILS', 15, y);
+                    y += 8;
+
+                    otherArticles.slice(0, 15).forEach(a => {
+                        if (y > 270) { doc.addPage(); y = 20; }
+                        doc.setFontSize(8);
+                        doc.setTextColor(198, 40, 40);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text(a.source.toUpperCase(), 15, y);
+                        y += 4;
+                        doc.setFontSize(10);
+                        doc.setTextColor(0, 0, 0);
+                        doc.setFont('helvetica', 'normal');
+                        const title = doc.splitTextToSize(a.title || '', pageWidth - 35);
+                        doc.text(title, 15, y);
+                        y += title.length * 4 + 2;
+                        if (a.published) {
+                            doc.setFontSize(7);
+                            doc.setTextColor(150, 150, 150);
+                            doc.text(a.published.substring(0, 25), 15, y);
+                            y += 6;
+                        }
+                        y += 4;
+                    });
+                }
+
+                // Footer
+                doc.setFontSize(8);
+                doc.setTextColor(150, 150, 150);
+                doc.text(`American Red Cross | DR 153-26 | Generated ${new Date().toISOString().split('T')[0]}`, pageWidth/2, 285, {align: 'center'});
+
+                doc.save('SC-DR153-26-News-Summary.pdf');
+            } catch (err) {
+                alert('PDF generation failed: ' + err.message);
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Export PDF';
+        });
+
+        // Initial load
+        loadNews();
     </script>
 </body>
 </html>
