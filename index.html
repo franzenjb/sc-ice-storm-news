@@ -214,19 +214,19 @@
                     const now = new Date();
                     const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 
-                    // Red header
+                    // Red header - taller for better readability
                     doc.setFillColor(211, 47, 47);
-                    doc.rect(0, 0, W, 32, 'F');
+                    doc.rect(0, 0, W, 38, 'F');
                     doc.setTextColor(255, 255, 255);
-                    doc.setFontSize(22);
+                    doc.setFontSize(24);
                     doc.setFont('helvetica', 'bold');
-                    doc.text('South Carolina Ice Storm', M, 14);
-                    doc.setFontSize(12);
+                    doc.text('South Carolina Ice Storm', M, 16);
+                    doc.setFontSize(13);
                     doc.setFont('helvetica', 'normal');
-                    doc.text('DR 153-26 | Disaster Operations Briefing', M, 21);
-                    doc.setFontSize(9);
-                    doc.text('Prepared By: Gary Pelletier | ' + dateStr, M, 28);
-                    y = 40;
+                    doc.text('DR 153-26 | Disaster Operations Briefing', M, 25);
+                    doc.setFontSize(10);
+                    doc.text('Prepared By: Gary Pelletier | ' + dateStr, M, 33);
+                    y = 46;
 
                     // Stats bar
                     const articles = currentArticles || [];
