@@ -14,6 +14,7 @@ For American Red Cross emergency response
 import json
 import os
 import re
+import urllib.request
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -27,8 +28,8 @@ from reportlab.platypus import (
 )
 from reportlab.lib.enums import TA_LEFT, TA_CENTER
 
-# Import the news crawler
-from news_crawler import NewsCrawler
+# API endpoint - single source of truth for news data
+NEWS_API_URL = "https://sc-ice-storm-news.vercel.app/api/crawl"
 
 # Configuration
 OUTPUT_DIR = Path(__file__).parent
@@ -466,6 +467,29 @@ class NewsPDFGenerator:
         return elements
 
 
+def fetch_news_from_api():
+    """Fetch news from the single API endpoint."""
+    print(f"Fetching from {NEWS_API_URL}...")
+    req = urllib.request.Request(
+        NEWS_API_URL,
+        headers={"User-Agent": "Mozilla/5.0 SC-News-PDF-Generator"}
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as response:
+            data = json.loads(response.read().decode('utf-8'))
+            return data.get('articles', [])
+    except Exception as e:
+        print(f"Error fetching from API: {e}")
+        # Fallback: try local news_data.json
+        local_file = Path(__file__).parent / "news_data.json"
+        if local_file.exists():
+            print(f"Using local cache: {local_file}")
+            with open(local_file) as f:
+                data = json.load(f)
+                return data.get('articles', [])
+        return []
+
+
 def main():
     """Main entry point."""
     print("=" * 60)
@@ -474,13 +498,18 @@ def main():
     print("=" * 60)
     print()
 
-    # Run news crawler
-    print("Crawling news sources...")
-    crawler = NewsCrawler()
-    articles = crawler.crawl()
+    # Fetch from single API source
+    articles = fetch_news_from_api()
+
+    if not articles:
+        print("No articles found!")
+        return
 
     # Save JSON backup
-    crawler.save_json()
+    backup_file = Path(__file__).parent / "news_data.json"
+    with open(backup_file, 'w') as f:
+        json.dump({'articles': articles, 'fetched_at': datetime.now().isoformat()}, f, indent=2)
+    print(f"Saved backup: {backup_file}")
 
     # Generate PDF
     print("\nGenerating PDF report...")
