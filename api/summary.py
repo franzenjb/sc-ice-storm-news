@@ -24,37 +24,39 @@ def call_claude(articles):
             article_text += f"   Summary: {a.get('summary', '')[:200]}\n"
         article_text += f"   Date: {a.get('published', 'Unknown')[:25]}\n\n"
 
-    prompt = f"""You are a disaster operations analyst for the American Red Cross. Analyze these news articles about the South Carolina Ice Storm (DR 153-26) and create a comprehensive briefing document.
+    prompt = f"""You are a disaster operations analyst for the American Red Cross. Analyze these news articles about the South Carolina Ice Storm (DR 153-26).
+
+CRITICAL: Only include FACTUAL information explicitly stated in the articles below. DO NOT make up numbers, speculate, or include any information not directly from these sources. If data is not available, say "Not reported in coverage".
 
 NEWS ARTICLES:
 {article_text}
 
 Generate a JSON response with this exact structure:
 {{
-    "executive_summary": "2-3 paragraph executive summary of the situation for disaster leadership",
+    "executive_summary": "2-3 paragraph executive summary ONLY using facts from the articles above",
     "key_impacts": {{
-        "power_outages": ["bullet point 1", "bullet point 2", ...],
-        "road_conditions": ["bullet point 1", "bullet point 2", ...],
-        "schools_closures": ["bullet point 1", "bullet point 2", ...],
-        "shelters_warming": ["bullet point 1", "bullet point 2", ...],
-        "emergency_response": ["bullet point 1", "bullet point 2", ...]
+        "power_outages": ["ONLY facts from articles about power"],
+        "road_conditions": ["ONLY facts from articles about roads"],
+        "schools_closures": ["ONLY facts from articles about schools"],
+        "shelters_warming": ["ONLY facts from articles about shelters"],
+        "emergency_response": ["ONLY facts from articles about emergency response"]
     }},
-    "affected_areas": ["County/City 1", "County/City 2", ...],
+    "affected_areas": ["ONLY locations explicitly mentioned in articles"],
     "critical_numbers": {{
-        "estimated_outages": "number or range",
-        "crashes_reported": "number if mentioned",
-        "shelters_open": "number if mentioned",
-        "schools_affected": "number if mentioned"
+        "estimated_outages": "ONLY if specific number in articles, otherwise 'See coverage'",
+        "crashes_reported": "ONLY if specific number in articles, otherwise 'See coverage'",
+        "shelters_open": "ONLY if specific number in articles, otherwise 'See coverage'",
+        "schools_affected": "ONLY if specific number in articles, otherwise 'See coverage'"
     }},
-    "action_items": ["Recommended action 1", "Recommended action 2", ...],
+    "action_items": ["Practical actions based on article content"],
     "timeline": [
-        {{"time": "date/time", "event": "description"}},
+        {{"time": "date/time from article", "event": "what happened"}},
         ...
     ],
-    "resources_mentioned": ["hotline numbers", "websites", "contacts mentioned in articles"]
+    "resources_mentioned": ["ONLY hotlines/contacts explicitly in articles"]
 }}
 
-Be specific with numbers and locations when available. If information is not available, use "Not reported" or empty arrays."""
+IMPORTANT: Zero hallucination. Every fact must trace to an article above."""
 
     headers = {
         'Content-Type': 'application/json',
@@ -116,30 +118,31 @@ def generate_fallback_summary(articles):
         if any(w in text for w in ['shelter', 'warming', 'hotline']):
             shelter_articles.append(a.get('title', ''))
 
+    # Only include actual article headlines as impacts - no made up data
     return {
-        "executive_summary": f"A significant winter ice storm is impacting South Carolina, with {len(articles)} news articles tracked from {len(sources)} sources. Reports indicate widespread power outages, hazardous road conditions, school closures, and emergency warming shelters being activated across the state. State officials have declared emergency conditions and activated response protocols.",
+        "executive_summary": f"This report summarizes {len(articles)} news articles from {len(sources)} sources covering the South Carolina ice storm. See article headlines below for specific impacts reported by local media.",
         "key_impacts": {
-            "power_outages": [t[:80] for t in power_articles[:4]] or ["Multiple power outages reported across the state"],
-            "road_conditions": [t[:80] for t in road_articles[:4]] or ["Hazardous driving conditions reported"],
-            "schools_closures": [t[:80] for t in school_articles[:4]] or ["Multiple school closures and delays"],
-            "shelters_warming": [t[:80] for t in shelter_articles[:4]] or ["Warming shelters activated"],
-            "emergency_response": ["State Emergency Operations Center activated", "National Guard mobilized"]
+            "power_outages": [t[:100] for t in power_articles[:4]] if power_articles else ["See news coverage below"],
+            "road_conditions": [t[:100] for t in road_articles[:4]] if road_articles else ["See news coverage below"],
+            "schools_closures": [t[:100] for t in school_articles[:4]] if school_articles else ["See news coverage below"],
+            "shelters_warming": [t[:100] for t in shelter_articles[:4]] if shelter_articles else ["See news coverage below"],
+            "emergency_response": ["See news coverage below for emergency response details"]
         },
-        "affected_areas": ["Upstate SC", "Midlands", "Columbia", "Greenville", "Western NC"],
+        "affected_areas": ["See specific locations in articles below"],
         "critical_numbers": {
-            "estimated_outages": "18,000+",
-            "crashes_reported": "Multiple reported",
-            "shelters_open": "Multiple locations",
-            "schools_affected": "Statewide"
+            "estimated_outages": "See coverage",
+            "crashes_reported": "See coverage",
+            "shelters_open": "See coverage",
+            "schools_affected": "See coverage"
         },
         "action_items": [
-            "Monitor power restoration progress",
-            "Coordinate with local emergency management",
-            "Track shelter capacity and needs",
-            "Prepare for extended cold weather impacts"
+            "Review article details below for current situation",
+            "Check power company websites for outage updates",
+            "Monitor local news for road conditions",
+            "Contact local emergency management for shelter info"
         ],
         "timeline": [],
-        "resources_mentioned": ["SC Winter Weather Hotline: 1-866-246-0133"]
+        "resources_mentioned": ["See articles for contact information"]
     }
 
 

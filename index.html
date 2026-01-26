@@ -256,7 +256,7 @@
                     doc.setTextColor(51, 51, 51);
                     doc.setFontSize(10);
                     doc.setFont('helvetica', 'normal');
-                    const execSummary = aiSummary?.executive_summary || 'A significant winter ice storm is impacting South Carolina with widespread power outages, hazardous road conditions, and emergency response activations across the state.';
+                    const execSummary = aiSummary?.executive_summary || 'This report compiles ' + articles.length + ' news articles from South Carolina media sources covering the current ice storm. Review the news articles below for specific details on impacts, closures, and emergency response activities.';
                     const execLines = doc.splitTextToSize(execSummary, CW);
                     doc.text(execLines, M, y);
                     y += execLines.length * 4.5 + 8;
@@ -272,11 +272,11 @@
                     y += 8;
 
                     const impacts = aiSummary?.key_impacts || {
-                        power_outages: ['18,000+ customers without power', 'Duke Energy staging restoration crews'],
-                        road_conditions: ['Hazardous driving conditions statewide', 'Multiple crashes reported'],
-                        schools_closures: ['Widespread school closures Monday', 'E-learning activated in multiple districts'],
-                        shelters_warming: ['Warming shelters open across Midlands', 'State emergency hotline activated'],
-                        emergency_response: ['State moved to OPCON 1', 'National Guard mobilized']
+                        power_outages: ['See news articles below for power outage details'],
+                        road_conditions: ['See news articles below for road conditions'],
+                        schools_closures: ['See news articles below for school closures'],
+                        shelters_warming: ['See news articles below for shelter information'],
+                        emergency_response: ['See news articles below for emergency response']
                     };
 
                     const categories = [
@@ -322,10 +322,10 @@
                     y += 8;
 
                     const nums = aiSummary?.critical_numbers || {
-                        estimated_outages: '18,000+',
-                        crashes_reported: 'Multiple',
-                        shelters_open: 'Multiple locations',
-                        schools_affected: 'Statewide'
+                        estimated_outages: 'See coverage',
+                        crashes_reported: 'See coverage',
+                        shelters_open: 'See coverage',
+                        schools_affected: 'See coverage'
                     };
 
                     doc.setFillColor(245, 245, 245);
@@ -350,11 +350,10 @@
                     y += 8;
 
                     const actions = aiSummary?.action_items || [
-                        'Continue monitoring power restoration progress across affected areas',
-                        'Coordinate with local emergency management on shelter capacity',
-                        'Track road conditions and travel advisories',
-                        'Prepare for extended cold weather impacts Tuesday',
-                        'Update stakeholders on Red Cross response activities'
+                        'Review news articles below for current situation details',
+                        'Check utility company websites for live outage maps',
+                        'Monitor local news sources for road condition updates',
+                        'Contact local emergency management for shelter locations'
                     ];
 
                     doc.setTextColor(51, 51, 51);
@@ -380,9 +379,7 @@
                     y += 8;
 
                     const resources = aiSummary?.resources_mentioned || [
-                        'SC Winter Weather Hotline: 1-866-246-0133',
-                        'Duke Energy Outages: 800-769-3766',
-                        'SC Emergency Management: scemd.org'
+                        'See news articles for specific contact information'
                     ];
 
                     doc.setTextColor(51, 51, 51);
