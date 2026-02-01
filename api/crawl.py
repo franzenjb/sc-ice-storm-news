@@ -18,17 +18,12 @@ def clean_html(text):
     """Remove all HTML tags and decode entities."""
     if not text:
         return ''
-    # Remove &nbsp; before unescaping (converts to \xa0 otherwise)
     text = text.replace('&nbsp;', ' ')
-    # Decode HTML entities (&lt; -> <, &amp; -> &, etc.)
     text = html.unescape(text)
-    # Replace non-breaking space unicode with regular space
     text = text.replace('\xa0', ' ')
-    # Remove CDATA wrappers
+    text = text.replace('&nbsp;', ' ')
     text = re.sub(r'<!\[CDATA\[(.*?)\]\]>', r'\1', text, flags=re.DOTALL)
-    # Remove all HTML tags
     text = re.sub(r'<[^>]+>', ' ', text)
-    # Clean up whitespace
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
@@ -55,27 +50,20 @@ SEARCH_TERMS = [
 USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
 
 def fetch_url(url):
-    """Fetch URL content."""
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     try:
         with urllib.request.urlopen(req, timeout=10) as response:
             return response.read().decode('utf-8')
-    except Exception as e:
+    except Exception:
         return None
 
 def parse_rss_simple(xml_content):
-    """Simple RSS parser without external dependencies."""
     items = []
     if not xml_content:
         return items
-
-    # Find all <item> or <entry> blocks
-    import re
     item_pattern = re.compile(r'<item>(.*?)</item>', re.DOTALL)
     entry_pattern = re.compile(r'<entry>(.*?)</entry>', re.DOTALL)
-
     matches = item_pattern.findall(xml_content) or entry_pattern.findall(xml_content)
-
     for item_xml in matches[:15]:
         title_match = re.search(r'<title[^>]*>(.*?)</title>', item_xml, re.DOTALL)
         link_match = re.search(r'<link[^>]*>(.*?)</link>', item_xml, re.DOTALL) or \
@@ -83,20 +71,15 @@ def parse_rss_simple(xml_content):
         pub_match = re.search(r'<pubDate>(.*?)</pubDate>', item_xml, re.DOTALL) or \
                     re.search(r'<published>(.*?)</published>', item_xml, re.DOTALL)
         desc_match = re.search(r'<description>(.*?)</description>', item_xml, re.DOTALL)
-
         title = clean_html(title_match.group(1)) if title_match else ''
-
         link = ''
         if link_match:
             link = link_match.group(1).strip()
             link = re.sub(r'<!\[CDATA\[(.*?)\]\]>', r'\1', link)
-
         pub_date = pub_match.group(1).strip() if pub_match else ''
-
         description = ''
         if desc_match:
-            description = clean_html(desc_match.group(1))[:200]
-
+            description = clean_html(desc_match.group(1))[:300]
         if title and link:
             items.append({
                 'title': title,
@@ -104,7 +87,6 @@ def parse_rss_simple(xml_content):
                 'published': pub_date,
                 'description': description
             })
-
     return items
 
 def generate_id(url):
@@ -116,7 +98,6 @@ def normalize_title(title):
 def is_relevant(title, description=''):
     text = f"{title} {description}".lower()
 
-    # EXCLUDE crime/police stories - not relevant to winter storm
     exclude_terms = [
         'shooting', 'shot', 'murder', 'killed', 'homicide', 'gunfire', 'gunman',
         'arrest', 'arrested', 'charged', 'custody', 'suspect', 'investigation',
@@ -126,15 +107,22 @@ def is_relevant(title, description=''):
         'machine gun', 'weapon', 'firearm',
         'missing person', 'found dead', 'body found',
         'traffic stop', 'pulled over', 'dui', 'dwi',
+        'hospice', 'funeral', 'obituary', 'died of', 'passes away', 'cancer',
+        'football', 'basketball', 'baseball', 'soccer', 'nfl', 'nba', 'ncaa',
+        'game day', 'touchdown', 'playoff', 'coach enters',
+        'election', 'vote', 'ballot', 'campaign', 'democrat', 'republican',
+        'congress', 'senate',
+        'real estate', 'restaurant', 'recipe', 'entertainment', 'movie', 'concert',
+        'live cam', 'live look', 'photos:', 'viewer', 'share their',
+        'fun in the snow', 'snow day:', 'afterglow', 'snow photos',
+        'live cams:', 'photo gallery',
     ]
     if any(term in text for term in exclude_terms):
         return False
 
-    # ALWAYS include Red Cross articles about SC
     if 'red cross' in text and any(loc in text for loc in ['south carolina', ' sc ', 'carolina']):
         return True
 
-    # Location matching - South Carolina only
     location_match = any(term in text for term in [
         'south carolina', ' sc ', 'columbia', 'greenville', 'charleston',
         'spartanburg', 'upstate', 'midlands', 'lowcountry', 'pee dee',
@@ -144,32 +132,31 @@ def is_relevant(title, description=''):
         'oconee', 'laurens', 'newberry', 'saluda', 'edgefield', 'abbeville',
         'grand strand', 'santee', 'lake murray', 'clemson', 'conway'
     ])
-    # Exclude if clearly about North Carolina (without SC mention)
     nc_only = 'north carolina' in text and 'south carolina' not in text
     if nc_only:
         return False
-    # Weather/emergency matching - expanded keywords
     weather_match = any(term in text for term in [
-        'ice', 'winter', 'storm', 'freeze', 'freezing', 'cold', 'sleet',
-        'power outage', 'outage', 'shelter', 'emergency', 'weather',
-        'duke energy', 'dominion energy', 'santee cooper', 'electric',
-        'warming center', 'school clos', 'delay', 'cancel', 'road',
-        'traffic', 'accident', 'crash', 'hazard', 'national guard',
-        'state of emergency', 'governor', 'mcmaster', 'red cross'
+        'ice storm', 'winter storm', 'winter weather', 'freezing rain',
+        'freezing temperature', 'sleet',
+        'power outage', 'outage', 'without power',
+        'shelter', 'warming center',
+        'extreme cold', 'bitter cold', 'cold warning', 'cold temperature',
+        'dangerous cold', 'dangerously cold', 'wind chill',
+        'duke energy', 'dominion energy', 'santee cooper',
+        'school clos', 'school delay', 'e-learning', 'elearning',
+        'state of emergency', 'governor', 'mcmaster',
+        'road clos', 'bridge clos', 'icy road', 'hazardous travel',
+        'stay off the road', 'impassible', 'snow',
+        'red cross', 'national guard', 'hypothermia',
     ])
     return location_match and weather_match
 
 def parse_date(pub):
-    """Try to parse article date, return None if unparseable."""
     if not pub:
         return None
-    # Clean up the date string
     pub_clean = pub.strip()
-    # Remove timezone abbreviations that strptime can't handle
     pub_clean = re.sub(r'\s+(GMT|UTC|EST|EDT|PST|PDT|CST|CDT)$', '', pub_clean)
-    # Remove +0000 style timezone
     pub_clean = re.sub(r'\s*[+-]\d{4}$', '', pub_clean)
-
     for fmt in ['%a, %d %b %Y %H:%M:%S', '%Y-%m-%dT%H:%M:%S', '%Y-%m-%d %H:%M:%S', '%d %b %Y %H:%M:%S']:
         try:
             return datetime.strptime(pub_clean, fmt)
@@ -178,35 +165,25 @@ def parse_date(pub):
     return None
 
 def is_recent_enough(article, now):
-    """Check if article is within time window: 36h for regular, 7d for Red Cross."""
     text = (article.get('title', '') + ' ' + article.get('summary', '')).lower()
     is_red_cross = 'red cross' in text
-
-    cutoff = now - timedelta(days=7) if is_red_cross else now - timedelta(hours=36)
-
+    cutoff = now - timedelta(days=7) if is_red_cross else now - timedelta(hours=48)
     pub_date = parse_date(article.get('published', ''))
     if pub_date:
         return pub_date >= cutoff
-
-    # Fallback: check for Jan 2026 in string (current month)
     pub = article.get('published', '')
     if is_red_cross:
-        return '2026' in pub and 'Jan' in pub
-    else:
-        # For 36h, only accept very recent dates
-        return '2026' in pub and 'Jan' in pub and any(d in pub for d in ['25', '26', '27'])
+        return '2026' in pub
+    return '2026' in pub
 
 def crawl_news():
-    """Run the news crawl."""
     articles = []
     seen_urls = set()
     seen_titles = set()
 
-    # Google News RSS
     for term in SEARCH_TERMS:
         encoded_term = quote_plus(term)
         rss_url = f"https://news.google.com/rss/search?q={encoded_term}&hl=en-US&gl=US&ceid=US:en"
-
         content = fetch_url(rss_url)
         if content:
             items = parse_rss_simple(content)
@@ -214,15 +191,12 @@ def crawl_news():
                 title = item['title']
                 url = item['link']
                 norm_title = normalize_title(title)
-
                 if url in seen_urls or norm_title in seen_titles:
                     continue
                 if not is_relevant(title, item.get('description', '')):
                     continue
-
                 seen_urls.add(url)
                 seen_titles.add(norm_title)
-
                 articles.append({
                     'id': generate_id(url),
                     'title': title,
@@ -232,31 +206,21 @@ def crawl_news():
                     'summary': item.get('description', ''),
                 })
 
-    # Local SC RSS feeds - TV stations and newspapers (South Carolina only)
     local_feeds = [
-        # Columbia / Midlands
         ("WLTX Columbia", "https://www.wltx.com/feeds/syndication/rss/news/local"),
         ("WIS Columbia", "https://www.wistv.com/arc/outboundfeeds/rss/category/news/?outputType=xml"),
         ("WACH Fox Columbia", "https://wach.com/feed/rss/news/local"),
         ("The State", "https://www.thestate.com/news/local/?widgetName=rssfeed&widgetContentId=712015&getContent=true"),
-
-        # Greenville / Upstate
         ("WYFF Greenville", "https://www.wyff4.com/topstories-rss"),
         ("Fox Carolina", "https://www.foxcarolina.com/search/?f=rss&t=article&c=news/local&l=50&s=start_time&sd=desc"),
         ("WSPA Spartanburg", "https://www.wspa.com/feed/"),
         ("Greenville News", "https://www.greenvilleonline.com/arcio/rss/"),
-
-        # Charleston / Lowcountry
         ("WCSC Charleston", "https://www.live5news.com/search/?f=rss&t=article&c=news/local&l=50&s=start_time&sd=desc"),
         ("WCBD Charleston", "https://www.counton2.com/feed/"),
         ("Post and Courier", "https://www.postandcourier.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc"),
-
-        # Pee Dee / Grand Strand
         ("WMBF Myrtle Beach", "https://www.wmbfnews.com/search/?f=rss&t=article&c=news&l=50&s=start_time&sd=desc"),
         ("WBTW Florence", "https://www.wbtw.com/feed/"),
         ("WPDE Myrtle Beach", "https://wpde.com/feed/rss/news/local"),
-
-        # Aiken / Augusta area (SC side)
         ("WRDW Augusta", "https://www.wrdw.com/search/?f=rss&t=article&c=news/local&l=50"),
     ]
 
@@ -268,15 +232,12 @@ def crawl_news():
                 title = item['title']
                 url = item['link']
                 norm_title = normalize_title(title)
-
                 if url in seen_urls or norm_title in seen_titles:
                     continue
                 if not is_relevant(title, item.get('description', '')):
                     continue
-
                 seen_urls.add(url)
                 seen_titles.add(norm_title)
-
                 articles.append({
                     'id': generate_id(url),
                     'title': title,
@@ -286,11 +247,9 @@ def crawl_news():
                     'summary': item.get('description', ''),
                 })
 
-    # Filter by date: 36h for regular, 7d for Red Cross
     now = datetime.now()
     filtered_articles = [a for a in articles if is_recent_enough(a, now)]
 
-    # Sort newest to oldest
     def get_sort_date(article):
         pub_date = parse_date(article.get('published', ''))
         return pub_date if pub_date else datetime.min
@@ -311,12 +270,10 @@ class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
             result = crawl_news()
-
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Access-Control-Allow-Origin', '*')
-            # Cache for 6 hours, stale-while-revalidate for smooth updates
-            self.send_header('Cache-Control', 's-maxage=21600, stale-while-revalidate=3600')
+            self.send_header('Cache-Control', 's-maxage=10800, stale-while-revalidate=3600')
             self.end_headers()
             self.wfile.write(json.dumps(result).encode())
         except Exception as e:
