@@ -41,9 +41,8 @@
         .spinner { width: 40px; height: 40px; border: 4px solid #ffcdd2; border-top: 4px solid #c62828; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .error-msg { text-align: center; padding: 40px 20px; color: #c62828; }
-        .pdf-btn { background: #c62828; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; }
-        .pdf-btn:hover { background: #b71c1c; }
-        .pdf-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .pdf-btn { background: #c62828; color: white; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 600; text-decoration: none; display: none; }
+        .pdf-btn:hover { background: #b71c1c; color: white; }
     </style>
 </head>
 <body>
@@ -62,7 +61,7 @@
             <div class="articles-section">
                 <h2 class="section-title">
                     <span>Latest Coverage</span>
-                    <a class="pdf-btn" id="pdf-btn" href="/api/pdf" target="_top" style="display:none;text-decoration:none;">Export PDF</a>
+                    <a class="pdf-btn" id="pdf-btn" href="/api/pdf" target="_top">Export PDF</a>
                 </h2>
                 <div id="articles-container">
                     <div class="loading-spinner"><div class="spinner"></div><div>Fetching latest news...</div></div>
@@ -85,33 +84,29 @@
     </div>
     <div class="footer" id="footer">American Red Cross | News Monitoring System</div>
     <script>
-        var _articles = [];
-        var _crawledAt = null;
-        var _sourceCounts = {};
-
         async function loadNews() {
             try {
                 var resp = await fetch('/api/crawl');
                 if (!resp.ok) throw new Error('API returned ' + resp.status);
                 var data = await resp.json();
-                _articles = data.articles || [];
+                var articles = data.articles || [];
                 var meta = data.metadata || {};
-                _crawledAt = meta.crawled_at ? new Date(meta.crawled_at) : new Date();
-                document.getElementById('last-updated').textContent = 'Last updated: ' + _crawledAt.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-                _sourceCounts = {};
+                var crawledAt = meta.crawled_at ? new Date(meta.crawled_at) : new Date();
+                document.getElementById('last-updated').textContent = 'Last updated: ' + crawledAt.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                var sourceCounts = {};
                 var redCrossCount = 0;
-                _articles.forEach(function(a) {
-                    _sourceCounts[a.source] = (_sourceCounts[a.source] || 0) + 1;
+                articles.forEach(function(a) {
+                    sourceCounts[a.source] = (sourceCounts[a.source] || 0) + 1;
                     if ((a.title + ' ' + (a.summary || '')).toLowerCase().indexOf('red cross') >= 0) redCrossCount++;
                 });
-                document.getElementById('stat-total').textContent = _articles.length;
-                document.getElementById('stat-sources').textContent = Object.keys(_sourceCounts).length;
+                document.getElementById('stat-total').textContent = articles.length;
+                document.getElementById('stat-sources').textContent = Object.keys(sourceCounts).length;
                 document.getElementById('stat-redcross').textContent = redCrossCount;
                 var container = document.getElementById('articles-container');
-                if (_articles.length === 0) {
+                if (articles.length === 0) {
                     container.innerHTML = '<div class="error-msg">No recent articles found. News is crawled every few hours.</div>';
                 } else {
-                    container.innerHTML = _articles.map(function(a) {
+                    container.innerHTML = articles.map(function(a) {
                         return '<div class="article-card">' +
                             '<div class="article-source">' + esc(a.source) + '</div>' +
                             '<h3 class="article-title"><a href="' + esc(a.url) + '" target="_blank">' + esc(a.title) + '</a></h3>' +
@@ -120,180 +115,15 @@
                     }).join('');
                     document.getElementById('pdf-btn').style.display = 'inline-block';
                 }
-                var sorted = Object.entries(_sourceCounts).sort(function(a, b) { return b[1] - a[1]; });
+                var sorted = Object.entries(sourceCounts).sort(function(a, b) { return b[1] - a[1]; });
                 document.getElementById('sources-container').innerHTML = sorted.map(function(pair) {
                     return '<div class="source-item"><span>' + esc(pair[0]) + '</span><span class="source-count">' + pair[1] + '</span></div>';
                 }).join('');
-                document.getElementById('footer').textContent = 'American Red Cross | News Monitoring System | Updated ' + _crawledAt.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                document.getElementById('footer').textContent = 'American Red Cross | News Monitoring System | Updated ' + crawledAt.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
             } catch (err) {
                 document.getElementById('articles-container').innerHTML = '<div class="error-msg">Failed to load news: ' + esc(err.message) + '</div>';
             }
         }
-
-        function generatePDF() {
-            var btn = document.getElementById('pdf-btn');
-            btn.disabled = true;
-            btn.textContent = 'Generating...';
-
-            try {
-                var jsPDF = window.jspdf.jsPDF;
-                var doc = new jsPDF('p', 'pt', 'letter');
-                var pageW = doc.internal.pageSize.getWidth();
-                var pageH = doc.internal.pageSize.getHeight();
-                var margin = 50;
-                var usable = pageW - margin * 2;
-                var y = 0;
-
-                // --- Header bar ---
-                doc.setFillColor(211, 47, 47);
-                doc.rect(0, 0, pageW, 80, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(22);
-                doc.setFont('helvetica', 'bold');
-                doc.text('SC DR 153-26 | News Summary', margin, 35);
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'normal');
-                doc.text('American Red Cross | Disaster Operations', margin, 52);
-                var ts = _crawledAt ? _crawledAt.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : new Date().toLocaleString();
-                doc.text('Generated: ' + ts, margin, 67);
-                y = 100;
-
-                // --- Stats ---
-                doc.setTextColor(198, 40, 40);
-                doc.setFontSize(28);
-                doc.setFont('helvetica', 'bold');
-                doc.text(String(_articles.length), margin, y);
-                doc.setFontSize(9);
-                doc.setTextColor(100, 100, 100);
-                doc.setFont('helvetica', 'normal');
-                doc.text('ARTICLES', margin, y + 12);
-
-                doc.setTextColor(198, 40, 40);
-                doc.setFontSize(28);
-                doc.setFont('helvetica', 'bold');
-                doc.text(String(Object.keys(_sourceCounts).length), margin + 120, y);
-                doc.setFontSize(9);
-                doc.setTextColor(100, 100, 100);
-                doc.setFont('helvetica', 'normal');
-                doc.text('SOURCES', margin + 120, y + 12);
-
-                y += 35;
-                doc.setDrawColor(224, 224, 224);
-                doc.line(margin, y, pageW - margin, y);
-                y += 20;
-
-                // --- Categorize articles ---
-                var categories = {
-                    'POWER & UTILITIES': ['power', 'outage', 'electric', 'duke energy', 'dominion', 'grid', 'restore'],
-                    'ROAD CONDITIONS': ['road', 'highway', 'crash', 'driving', 'travel', 'dot', 'bridge'],
-                    'SCHOOLS & CLOSURES': ['school', 'class', 'university', 'college', 'e-learning', 'closure', 'cancel'],
-                    'SHELTERS & EMERGENCY': ['shelter', 'warming', 'hotline', 'emergency', 'red cross', 'guard']
-                };
-
-                var categorized = {};
-                var uncategorized = [];
-                _articles.forEach(function(a) {
-                    var text = (a.title + ' ' + (a.summary || '')).toLowerCase();
-                    var placed = false;
-                    Object.keys(categories).forEach(function(cat) {
-                        categories[cat].forEach(function(kw) {
-                            if (!placed && text.indexOf(kw) >= 0) {
-                                if (!categorized[cat]) categorized[cat] = [];
-                                categorized[cat].push(a);
-                                placed = true;
-                            }
-                        });
-                    });
-                    if (!placed) uncategorized.push(a);
-                });
-
-                // --- Print categories ---
-                Object.keys(categories).forEach(function(cat) {
-                    var items = categorized[cat] || [];
-                    if (items.length === 0) return;
-
-                    if (y > pageH - 100) { doc.addPage(); y = 50; }
-
-                    doc.setFillColor(198, 40, 40);
-                    doc.rect(margin, y - 12, usable, 18, 'F');
-                    doc.setTextColor(255, 255, 255);
-                    doc.setFontSize(10);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text(cat + ' (' + items.length + ')', margin + 6, y);
-                    y += 16;
-
-                    items.forEach(function(a) {
-                        if (y > pageH - 60) { doc.addPage(); y = 50; }
-                        doc.setTextColor(51, 51, 51);
-                        doc.setFontSize(10);
-                        doc.setFont('helvetica', 'bold');
-                        var lines = doc.splitTextToSize(a.title, usable - 10);
-                        doc.text(lines, margin + 5, y);
-                        y += lines.length * 13;
-
-                        doc.setTextColor(150, 150, 150);
-                        doc.setFontSize(8);
-                        doc.setFont('helvetica', 'normal');
-                        doc.text(a.source + (a.published ? '  |  ' + a.published.substring(0, 25) : ''), margin + 5, y);
-                        y += 8;
-
-                        if (a.summary) {
-                            doc.setTextColor(100, 100, 100);
-                            doc.setFontSize(9);
-                            var sLines = doc.splitTextToSize(a.summary.substring(0, 150), usable - 10);
-                            doc.text(sLines, margin + 5, y);
-                            y += sLines.length * 11;
-                        }
-                        y += 8;
-                    });
-                    y += 6;
-                });
-
-                // --- Uncategorized ---
-                if (uncategorized.length > 0) {
-                    if (y > pageH - 100) { doc.addPage(); y = 50; }
-                    doc.setFillColor(100, 100, 100);
-                    doc.rect(margin, y - 12, usable, 18, 'F');
-                    doc.setTextColor(255, 255, 255);
-                    doc.setFontSize(10);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('OTHER COVERAGE (' + uncategorized.length + ')', margin + 6, y);
-                    y += 16;
-
-                    uncategorized.forEach(function(a) {
-                        if (y > pageH - 60) { doc.addPage(); y = 50; }
-                        doc.setTextColor(51, 51, 51);
-                        doc.setFontSize(10);
-                        doc.setFont('helvetica', 'bold');
-                        var lines = doc.splitTextToSize(a.title, usable - 10);
-                        doc.text(lines, margin + 5, y);
-                        y += lines.length * 13;
-                        doc.setTextColor(150, 150, 150);
-                        doc.setFontSize(8);
-                        doc.setFont('helvetica', 'normal');
-                        doc.text(a.source + (a.published ? '  |  ' + a.published.substring(0, 25) : ''), margin + 5, y);
-                        y += 14;
-                    });
-                }
-
-                // --- Footer on each page ---
-                var totalPages = doc.internal.getNumberOfPages();
-                for (var i = 1; i <= totalPages; i++) {
-                    doc.setPage(i);
-                    doc.setFontSize(8);
-                    doc.setTextColor(170, 170, 170);
-                    doc.text('American Red Cross | DR 153-26 News Summary | Page ' + i + ' of ' + totalPages, margin, pageH - 20);
-                }
-
-                var dateStr = new Date().toISOString().slice(0, 10);
-                var blobUrl = doc.output('bloburl'); window.open(blobUrl, '_blank');
-            } catch (e) {
-                alert('PDF generation failed: ' + e.message);
-            }
-            btn.disabled = false;
-            btn.textContent = 'Download PDF'; btn.disabled = false;
-        }
-
         function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
         loadNews();
     </script>
