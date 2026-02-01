@@ -10,17 +10,6 @@
     }
   ],
   "crons": [
-    {
-      "path": "/api/crawl",
-      "schedule": "0 11 * * *"
-    },
-    {
-      "path": "/api/crawl",
-      "schedule": "0 17 * * *"
-    },
-    {
-      "path": "/api/crawl",
-      "schedule": "0 22 * * *"
-    }
+    { "path": "/api/crawl", "schedule": "0 */3 * * *" }
   ]
 }
