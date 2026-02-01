@@ -63,7 +63,7 @@
             <div class="articles-section">
                 <h2 class="section-title">
                     <span>Latest Coverage</span>
-                    <button class="pdf-btn" id="pdf-btn" onclick="generatePDF()" disabled>Download PDF</button>
+                    <button class="pdf-btn" id="pdf-btn" onclick="generatePDF()" disabled>Export PDF</button>
                 </h2>
                 <div id="articles-container">
                     <div class="loading-spinner"><div class="spinner"></div><div>Fetching latest news...</div></div>
@@ -287,12 +287,12 @@
                 }
 
                 var dateStr = new Date().toISOString().slice(0, 10);
-                doc.save('SC-DR153-26-News-Summary-' + dateStr + '.pdf');
+                var blobUrl = doc.output('bloburl'); window.open(blobUrl, '_blank');
             } catch (e) {
                 alert('PDF generation failed: ' + e.message);
             }
             btn.disabled = false;
-            btn.textContent = 'Download PDF';
+            btn.textContent = 'Download PDF'; btn.disabled = false;
         }
 
         function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
