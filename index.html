@@ -41,8 +41,9 @@
         .spinner { width: 40px; height: 40px; border: 4px solid #ffcdd2; border-top: 4px solid #c62828; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .error-msg { text-align: center; padding: 40px 20px; color: #c62828; }
-        .pdf-btn { background: #c62828; color: white; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 600; text-decoration: none; display: none; }
-        .pdf-btn:hover { background: #b71c1c; color: white; }
+        .pdf-btn { background: #c62828; color: white; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 600; text-decoration: none; display: none; cursor: pointer; border: none; }
+        .pdf-btn:hover { background: #b71c1c; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 24px; border-radius: 8px; font-size: 14px; z-index: 9999; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
@@ -61,7 +62,7 @@
             <div class="articles-section">
                 <h2 class="section-title">
                     <span>Latest Coverage</span>
-                    <a class="pdf-btn" id="pdf-btn" href="https://sc-ice-storm-news.vercel.app/api/pdf" target="_blank" rel="noopener">Export PDF</a>
+                    <button class="pdf-btn" id="pdf-btn" onclick="copyPdfLink()">Export PDF</button>
                 </h2>
                 <div id="articles-container">
                     <div class="loading-spinner"><div class="spinner"></div><div>Fetching latest news...</div></div>
@@ -83,7 +84,22 @@
         </div>
     </div>
     <div class="footer" id="footer">American Red Cross | News Monitoring System</div>
+    <div class="toast" id="toast"></div>
     <script>
+        function copyPdfLink() {
+            var url = 'https://sc-ice-storm-news.vercel.app/api/pdf';
+            navigator.clipboard.writeText(url).then(function() {
+                showToast('PDF link copied! Paste in a new browser tab to download.');
+            }).catch(function() {
+                showToast('Open in new tab: ' + url);
+            });
+        }
+        function showToast(msg) {
+            var t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.display = 'block';
+            setTimeout(function() { t.style.display = 'none'; }, 5000);
+        }
         async function loadNews() {
             try {
                 var resp = await fetch('/api/crawl');
